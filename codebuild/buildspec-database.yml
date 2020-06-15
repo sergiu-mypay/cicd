@@ -1,0 +1,36 @@
+version: 0.4
+
+env:
+  variables:
+    SERVICE_PATH: "../backend/resources/database"
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 12
+    commands:
+      - npm install -g serverless
+      - cd ${SERVICE_PATH} && npm install
+    finally:
+      - echo Installation done 
+  build:
+    commands:
+      - mkdir -p target/dev
+      - mkdir -p target/qa
+      - mkdir -p target/uat
+      - mkdir target/prod
+      - serverless package --package target/dev --stage dev -v
+      - serverless package --package target/qa --stage qa -v
+      - serverless package --package target/uat --stage uat -v
+      - serverless package --package target/prod --stage prod -v
+    finally:
+      - echo Packaging done
+
+artifacts:
+  files:
+  - ${SERVICE_PATH}/target/**/*
+  - ${SERVICE_PATH}/serverless.yml
+  - deploy.sh  
+cache:
+  paths:
+    - ${SERVICE_PATH}/node_modules
