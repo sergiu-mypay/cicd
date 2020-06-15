@@ -1,6 +1,5 @@
 .serverless/
 node_modules/
-package-lock.json
 .build/
 .webpack/
 .dist/

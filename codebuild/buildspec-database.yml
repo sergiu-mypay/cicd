@@ -6,7 +6,7 @@ phases:
       nodejs: 12
     commands:
       - npm install -g serverless
-      - cd ${SERVICE_PATH} && npm install
+      - cd ${SERVICE_PATH} && npm ci
     finally:
       - echo Installation done 
   build:
