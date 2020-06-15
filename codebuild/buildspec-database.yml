@@ -29,6 +29,7 @@ artifacts:
   - ${SERVICE_PATH}/serverless.yml
   - serverless.common.yml
   - codebuild/buildspec-database-deploy.yml
+  - backend/resources/stack-outputs/*
 
 cache:
   paths:
