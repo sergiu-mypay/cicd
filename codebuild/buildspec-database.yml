@@ -26,3 +26,4 @@ artifacts:
   files:
   - ${SERVICE_PATH}/target/**/*
   - ${SERVICE_PATH}/serverless.yml
+  - codebuild/buildspec-database-deploy.yml
