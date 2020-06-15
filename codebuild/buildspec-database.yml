@@ -25,10 +25,10 @@ phases:
 artifacts:
   files:
   - ${SERVICE_PATH}/target/**/*
+  - ${SERVICE_PATH}/node_modules/**/*
   - ${SERVICE_PATH}/serverless.yml
   - codebuild/buildspec-database-deploy.yml
 
 cache:
   paths:
-    - node_modules
     - ${SERVICE_PATH}/node_modules
