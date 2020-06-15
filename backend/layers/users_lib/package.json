@@ -1,0 +1,17 @@
+{
+  "name": "helpers",
+  "version": "",
+  "description": "",
+  "scripts": {
+    "compile": "babel -d dist/nodejs/node_modules/users-helpers src/"
+  },
+  "author": "",
+  "license": "",
+  "devDependencies": {
+    "@babel/cli": "^7.10.1",
+    "@babel/core": "^7.10.2",
+    "@babel/preset-env": "^7.10.2"
+  },
+  "dependencies": {
+  }
+}

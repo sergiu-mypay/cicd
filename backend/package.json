@@ -1,0 +1,13 @@
+{
+  "name": "backend",
+  "version": "",
+  "description": "",
+  "scripts": {},
+  "author": "",
+  "license": "",
+  "devDependencies": {
+    "serverless-bundle": "^1.7.0",
+    "serverless-offline": "^6.4.0"
+  },
+  "dependencies": {}
+}

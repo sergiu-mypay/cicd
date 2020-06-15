@@ -1,0 +1,63 @@
+service: mypay-database
+
+plugins:
+  - serverless-stack-output
+  
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+
+custom:
+  defaultStage: ${file(../../../serverless.common.yml):custom.defaultStage}
+  stage: ${file(../../../serverless.common.yml):custom.stage}
+  output:
+    file: ../stack-outputs/database-${self:custom.stage}.yml
+
+resources:
+  Resources:
+    RDSCluster:
+      Type: AWS::RDS::DBCluster
+      Properties:
+        DBClusterIdentifier: ${self:custom.stage}-cluster
+        MasterUsername: !Join ['', ['{{resolve:secretsmanager:', !Ref DBSecret, ':SecretString:username}}' ]]
+        MasterUserPassword: !Join ['', ['{{resolve:secretsmanager:', !Ref DBSecret, ':SecretString:password}}' ]]
+        DatabaseName: ${self:custom.stage}_database
+        Engine: aurora
+        EngineMode: serverless
+        EngineVersion: 5.6.10a
+        EnableHttpEndpoint: true
+        ScalingConfiguration:
+          AutoPause: true
+          MaxCapacity: 4
+          MinCapacity: 1
+          SecondsUntilAutoPause: 900 # 15 min
+    DBSecret:
+      Type: AWS::SecretsManager::Secret
+      Properties:
+        Name: !Sub "${self:custom.stage}-UserSecret"
+        Description: RDS database auto-generated user password
+        GenerateSecretString:
+          SecretStringTemplate: !Sub '{"username": "DBMasterUserName"}'
+          GenerateStringKey: "password"
+          PasswordLength: 30
+          ExcludeCharacters: '"@/\'
+
+  Outputs:
+    DbClusterArn:
+      Value:
+        Fn::Join:
+          - ""
+          - - "arn:aws:rds:"
+            - Ref: AWS::Region
+            - ":"
+            - Ref: AWS::AccountId
+            - ":cluster:"
+            - Ref: RDSCluster
+      Export:
+        Name: ${self:custom.stage}-DbClusterArn
+    SecretManagerArn:
+      Value:
+        Ref: DBSecret
+      Export:
+        Name: ${self:custom.stage}-SecretManagerArn

@@ -1,0 +1,98 @@
+service: mypay-auth
+
+plugins:
+  - serverless-offline
+  - serverless-bundle
+  - serverless-plugin-custom-roles
+  - serverless-stack-output
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+  environment:
+    COGNITO_USER_POOL_ID: ${file(../../resources/stack-outputs/cognito-${self:custom.stage}.yml):CognitoUserPoolId}
+    COGNITO_CLIENT_ID: ${file(../../resources/stack-outputs/cognito-${self:custom.stage}.yml):CognitoUserPoolClientId}
+    STAGE: ${self:custom.stage}
+    DB_RESOURCE_ARN: ${file(../../resources/stack-outputs/database-${self:custom.stage}.yml):DbClusterArn}
+    SECRET_ARN: ${file(../../resources/stack-outputs/database-${self:custom.stage}.yml):SecretManagerArn}
+
+# package:
+#   exclude:
+#     - ../../layers/helper_lib/src/response.helper
+#     - ../../layers/users_lib/src/user
+#     - ../../layers/helper_lib/src/mysql-db
+  
+custom:
+  defaultStage: ${file(../../../serverless.common.yml):custom.defaultStage}
+  resourcesStages: ${file(../../../serverless.common.yml):custom.resourcesStages}
+  resourceStage: ${file(../../../serverless.common.yml):custom.resourcesStage}
+  stage: ${file(../../../serverless.common.yml):custom.stage}
+  baseApiPath: ${file(../../../serverless.common.yml):custom.baseApiPath}
+
+  authEntityPath: ${self:custom.baseApiPath}/auth
+
+  output:
+    file: stack-outputs/auth-${self:custom.stage}.yml
+
+  bundle:
+    externals:
+      - mypay-helpers
+      - users-helpers
+    linting: false #Ignore for compilation
+    ignorePackages:
+      - pg-hstore
+      # only on aws
+      - ../../../layers/helper_lib/src/response.helper
+      - ../../../layers/users_lib/src/user
+      - ../../../layers/helper_lib/src/mysql-db
+  
+functions:
+  ServiceAuthSignup:
+    handler: functions/signup-handler.signUp
+    iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - rds-data:ExecuteStatement
+        - rds-data:BatchExecuteStatement
+        - rds-data:BeginTransaction
+        - rds-data:CommitTransaction
+        - rds-data:RollbackTransaction
+      Resource: '*'
+    - Effect: Allow
+      Action:
+        - secretsmanager:GetSecretValue
+      Resource:
+        'Fn::ImportValue': ${self:custom.stage}-SecretManagerArn
+    events:
+    - http:
+        path: ${self:custom.authEntityPath}/signup
+        method: post
+        cors: true
+        request:
+          schema:
+            application/json: ${file(validators/signup-validator.json)}
+    layers:
+      - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+      - ${file(../../layers/layers-outputs.yml):UserslibLambdaLayerQualifiedArn}
+  ServiceAuthLogin:
+    handler: functions/login-handler.login
+    events:
+    - http:
+        path: ${self:custom.authEntityPath}/login
+        method: post
+        cors: true
+        request:
+          schema:
+            application/json: ${file(validators/login-validator.json)}
+    layers:
+      - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+  ServiceChangePassword:
+    handler: functions/changePassword-handler.changePassword
+    events:
+    - http:
+        path: ${self:custom.authEntityPath}/changePassword
+        method: post
+        cors: true
+    layers:
+      - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}

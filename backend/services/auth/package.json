@@ -1,0 +1,30 @@
+{
+  "name": "auth",
+  "version": "",
+  "description": "",
+  "scripts": {
+    "test": "jest tests"
+  },
+  "author": "",
+  "license": "",
+  "devDependencies": {
+    "@babel/core": "^7.10.2",
+    "@babel/preset-env": "^7.10.2",
+    "aws-sdk": "^2.695.0",
+    "babel-jest": "^26.0.1",
+    "jest": "^26.0.1",
+    "serverless-layers": "^2.2.4",
+    "serverless-plugin-custom-roles": "^1.1.1",
+    "serverless-stack-output": "^0.2.3"
+  },
+  "dependencies": {
+    "amazon-cognito-identity-js": "^4.3.1",
+    "dotenv": "^8.2.0",
+    "node-fetch": "^2.6.0"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "amazon-cognito-identity-js": "<rootDir>/tests/__mocks__/amazon-cognito-identity-js/index.js"
+    }
+  }
+}

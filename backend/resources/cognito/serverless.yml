@@ -1,0 +1,101 @@
+service: mypay-cognito
+
+plugins:
+  - serverless-stack-output
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+
+custom:
+  defaultStage: ${file(../../../serverless.common.yml):custom.defaultStage}
+  resourcesStages: ${file(../../../serverless.common.yml):custom.resourcesStages}
+  resourceStage: ${file(../../../serverless.common.yml):custom.resourcesStage}
+  stage: ${file(../../../serverless.common.yml):custom.stage}
+  siteBaseUrls:
+    prod: prod
+    dev: http://localhost:3001
+    qa: qa
+    uat: uat
+  siteBaseUrl: ${self:custom.siteBaseUrls.${self:custom.resourceStage}, self:custom.siteBaseUrls.dev}
+
+  output:
+    file: ../stack-outputs/cognito-${self:custom.stage}.yml
+
+resources:
+  Resources:
+    CognitoUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        # Generate a name based on the stage
+        UserPoolName: ${self:custom.stage}-user-pool
+        # Set email as an alias
+        AutoVerifiedAttributes:
+          - email
+        UsernameAttributes:
+          - email
+        Schema:
+          - AttributeDataType: String
+            DeveloperOnlyAttribute: False
+            Mutable: True
+            Name: email
+            Required: True
+          - AttributeDataType: String # Comma separated roles
+            DeveloperOnlyAttribute: False
+            Mutable: True
+            Name: roles
+            Required: False
+          - AttributeDataType: String # Comma separated permissions
+            DeveloperOnlyAttribute: False
+            Mutable: True
+            Name: permissions
+            Required: False
+        VerificationMessageTemplate:
+          DefaultEmailOption: CONFIRM_WITH_LINK
+          EmailSubject: Account confirmation
+          EmailMessageByLink: Please click the link below to verify your email address. {##Verify Email##} 
+        AdminCreateUserConfig:
+          InviteMessageTemplate:
+            EmailMessage: Your username is {username} and temporary password is {####}. <br> Click <a href='${self:custom.siteBaseUrl}'>here</a> to navigate to MyPay 
+            EmailSubject: MyPay Account information
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 8
+            RequireLowercase: False
+            RequireNumbers: False
+            RequireSymbols: False
+            RequireUppercase: False
+
+    CognitoUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        # Generate an app client name based on the stage
+        ClientName: ${self:custom.stage}-user-pool-client
+        UserPoolId:
+          Ref: CognitoUserPool
+        ExplicitAuthFlows:
+          - ADMIN_NO_SRP_AUTH
+        GenerateSecret: false
+    CognitoUserPoolDomain:
+      Type: AWS::Cognito::UserPoolDomain
+      Properties: 
+        Domain: ${self:custom.stage}-mypay-domain
+        UserPoolId: !Ref CognitoUserPool
+
+  Outputs:
+    CognitoUserPoolId:
+      Value:
+        Ref: CognitoUserPool
+      Export:
+        Name: ${self:custom.stage}-CognitoUserPoolId
+    CognitoUserPoolClientId:
+      Value:
+        Ref: CognitoUserPoolClient
+      Export:
+        Name: ${self:custom.stage}-CognitoUserPoolClientId
+    CognitoUserPoolArn:
+      Value: 
+        Fn::GetAtt: [CognitoUserPool, Arn]
+      Export:
+        Name: ${self:custom.stage}-CognitoUserPoolArn

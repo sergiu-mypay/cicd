@@ -1,0 +1,23 @@
+service: layer-helper
+
+plugins:
+  - serverless-stack-output
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+
+custom:
+  output:
+    file: layers-outputs.yml
+
+layers:
+  helperlib:
+    path: helper_lib/dist
+    description: MyPay helpers
+  userslib:
+    path: users_lib/dist
+    description: User models
+  
+

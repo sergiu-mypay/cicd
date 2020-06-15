@@ -1,0 +1,70 @@
+service: mypay-migrations
+
+plugins:
+  - serverless-offline
+  # - serverless-bundle
+  - serverless-plugin-custom-roles
+  - serverless-plugin-scripts
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+  environment:
+    STAGE: ${self:custom.stage}
+    DB_RESOURCE_ARN: ${file(../../resources/stack-outputs/database-${self:custom.stage}.yml):DbClusterArn}
+    SECRET_ARN: ${file(../../resources/stack-outputs/database-${self:custom.stage}.yml):SecretManagerArn}
+  
+custom:
+  defaultStage: ${file(../../../serverless.common.yml):custom.defaultStage}
+  stage: ${file(../../../serverless.common.yml):custom.stage}
+
+  bundle:
+    # cache: true
+    externals:
+      - mypay-helpers
+    linting: false #Ignore for compilation
+    ignorePackages:
+      - pg-hstore
+      # - pg-native
+    forceInclude:
+      - aws-sdk
+  
+  scripts:
+    commands:
+      migrations-up: sls invoke local -f ServiceMigrationsUp --stage=${self:custom.stage}
+      migrations-down: sls invoke local -f ServiceMigrationsDown --stage=${self:custom.stage}
+  
+functions:
+  ServiceMigrationsUp:
+    handler: functions/migrations-up-handler.migrationsUp
+    iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - rds-data:ExecuteStatement
+        - rds-data:BatchExecuteStatement
+        - rds-data:BeginTransaction
+        - rds-data:CommitTransaction
+        - rds-data:RollbackTransaction
+      Resource: '*'
+    - Effect: Allow
+      Action:
+        - secretsmanager:GetSecretValue
+      Resource:
+        'Fn::ImportValue': ${self:custom.stage}-SecretManagerArn
+  ServiceMigrationsDown:
+    handler: functions/migrations-down-handler.migrationsDown
+    iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - rds-data:ExecuteStatement
+        - rds-data:BatchExecuteStatement
+        - rds-data:BeginTransaction
+        - rds-data:CommitTransaction
+        - rds-data:RollbackTransaction
+      Resource: '*'
+    - Effect: Allow
+      Action:
+        - secretsmanager:GetSecretValue
+      Resource:
+        'Fn::ImportValue': ${self:custom.stage}-SecretManagerArn

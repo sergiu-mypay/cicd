@@ -1,0 +1,15 @@
+{
+    "name": "libraries",
+    "version": "",
+    "description": "",
+    "scripts": {},
+    "author": "",
+    "license": "",
+    "devDependencies": {},
+    "dependencies": {
+        "@fyreware/mysql-data-api": "^0.1.1",
+        "aws-sdk": "^2.695.0",
+        "mysql2": "^2.1.0",
+        "sequelize": "^5.21.12"
+    }
+}

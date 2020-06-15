@@ -1,0 +1,16 @@
+{
+  "name": "users",
+  "version": "",
+  "description": "",
+  "scripts": {},
+  "author": "",
+  "license": "",
+  "devDependencies": {
+    "serverless-plugin-custom-roles": "^1.1.1"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.695.0",
+    "dotenv": "^8.2.0",
+    "password-generator": "^2.3.2"
+  }
+}
