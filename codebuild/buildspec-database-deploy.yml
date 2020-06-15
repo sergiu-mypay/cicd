@@ -10,6 +10,7 @@ phases:
       - echo Installation done 
   build:
     commands:
+      - cd ${SERVICE_PATH}
       - serverless deploy --stage ${STAGE} --package ${SERVICE_PATH}/target/${STAGE} -v
     finally:
       - echo Deploy done
