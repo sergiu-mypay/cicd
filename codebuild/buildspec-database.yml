@@ -1,9 +1,5 @@
 version: 0.2
 
-env:
-  variables:
-    SERVICE_PATH: "../backend/resources/database"
-
 phases:
   install:
     runtime-versions:
