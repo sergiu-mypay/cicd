@@ -27,6 +27,7 @@ artifacts:
   - ${SERVICE_PATH}/target/**/*
   - ${SERVICE_PATH}/node_modules/**/*
   - ${SERVICE_PATH}/serverless.yml
+  - serverless.common.yml
   - codebuild/buildspec-database-deploy.yml
 
 cache:
