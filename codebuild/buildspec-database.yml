@@ -26,7 +26,3 @@ artifacts:
   files:
   - ${SERVICE_PATH}/target/**/*
   - ${SERVICE_PATH}/serverless.yml
-  - deploy.sh  
-cache:
-  paths:
-    - ${SERVICE_PATH}/node_modules
