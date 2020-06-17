@@ -37,6 +37,7 @@ phases:
       # - serverless package --package target/test
       # - cd ../../../
       # Cognito
+      - cd ../../../
       - echo `pwd`
       - cd ${RESOURCE_COGNITO} && serverless package --package target/test
       # - cd ${RESOURCE_COGNITO}
