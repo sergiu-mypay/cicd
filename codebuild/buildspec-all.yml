@@ -57,7 +57,7 @@ phases:
       # Gateway
       - echo Time `date`
       - echo `pwd`
-      - cd ${RESOURCE_GATEWAY} && serverless deploy && cd -
+      # - cd ${RESOURCE_GATEWAY} && serverless deploy && cd -
 
       # Layers
       - echo Time `date`
