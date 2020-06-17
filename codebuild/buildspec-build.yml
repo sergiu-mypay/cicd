@@ -33,28 +33,20 @@ phases:
       # DB
       - echo `pwd`
       - cd ${RESOURCE_DB} && serverless package --package target/test
-      # - mkdir -p target/test
-      # - serverless package --package target/test
-      # - cd ../../../
-      # Cognito
       - cd ../../../
+      # Cognito
       - echo `pwd`
       - cd ${RESOURCE_COGNITO} && serverless package --package target/test
-      # - cd ${RESOURCE_COGNITO}
-      # - mkdir -p target/test
-      # - serverless package --package target/test
-      # - cd ../../../
+      - cd ../../../
       # Gateway
-      # - cd ${GATEWAY}
-      # - mkdir -p target/test
-      # - serverless package --package target/test
-      # - cd ../../../
+      - echo `pwd`
+      - cd ${GATEWAY} && serverless package --package target/test
+      - cd ../../../
 
       # Layers
-      # - cd ${LAYERS}
-      # - mkdir -p target
-      # - serverless package --package target
-      # - cd ../../
+      - echo `pwd`
+      - cd ${LAYERS} && serverless package --package target/test
+      - cd ../../
 
     finally:
       - echo Packaging finished
