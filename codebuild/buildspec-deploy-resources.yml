@@ -32,8 +32,8 @@ phases:
       - cd ${RESOURCE_GATEWAY}
       - serverless deploy --package target/test -v && cd -
       # Layers
-      - cd ${LAYERS}
-      - echo `pwd`
-      - SLS_DEBUG=1 serverless deploy --package target -v && cd -
+      # - cd ${LAYERS}
+      # - echo `pwd`
+      # - SLS_DEBUG=1 serverless deploy --package target -v && cd -
     finally:
       - echo Deploy finished
