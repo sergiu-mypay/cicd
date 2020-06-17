@@ -24,15 +24,15 @@ phases:
     commands:
       # DB
       - cd ${RESOURCE_DB}
-      - serverless deploy --package target/dev -v && cd -
+      - serverless deploy --package target/test -v && cd -
       # Cognito
       - cd ${RESOURCE_COGNITO}
-      - serverless deploy --package target/dev -v && cd -
+      - serverless deploy --package target/test -v && cd -
       # Gateway
       - cd ${RESOURCE_GATEWAY}
-      - serverless deploy --package target/dev -v && cd -
+      - serverless deploy --package target/test -v && cd -
       # Cognito
       - cd ${LAYERS}
-      - serverless deploy --package target/dev -v && cd -
+      - serverless deploy --package target/test -v && cd -
     finally:
       - echo Deploy finished
