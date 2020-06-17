@@ -31,7 +31,8 @@ phases:
       - cd ${LAYERS}
       - cd helper_lib && npm run compile
       - cd ../
-      - cd users_lib && npm run compile && cd -
+      - cd users_lib && npm run compile
+      - cd ../../../
   build:
     commands:
       # TODO Add tests and lint
