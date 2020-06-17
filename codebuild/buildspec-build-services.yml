@@ -49,14 +49,17 @@ artifacts:
   - ${SERVICE_AUTH}/target/**/*
   - ${SERVICE_AUTH}/node_modules/**/*
   - ${SERVICE_AUTH}/serverless.yml
+  - ${SERVICE_AUTH}/functions.yml
   # Cognito
   - ${SERVICE_CUSTOMERS}/target/**/*
   - ${SERVICE_CUSTOMERS}/node_modules/**/*
   - ${SERVICE_CUSTOMERS}/serverless.yml
+  - ${SERVICE_CUSTOMERS}/functions.yml
   # Gateway
   - ${SERVICE_USERS}/target/**/*
   - ${SERVICE_USERS}/node_modules/**/*
   - ${SERVICE_USERS}/serverless.yml
+  - ${SERVICE_USERS}/functions.yml
   # Layers
   - ${SERVICE_MIGRATIONS}/target/**/*
   - ${SERVICE_MIGRATIONS}/node_modules/**/*

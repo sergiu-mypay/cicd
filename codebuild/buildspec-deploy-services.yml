@@ -25,13 +25,13 @@ phases:
     commands:
       # DB
       - cd ${SERVICE_AUTH}
-      - serverless deploy --package target/test -v && cd -
+      - serverless deploy --package target/test --alias=test && cd -
       # Cognito
       - cd ${SERVICE_CUSTOMERS}
-      - serverless deploy --package target/test -v && cd -
+      - serverless deploy --package target/test --alias=test && cd -
       # Gateway
       - cd ${SERVICE_USERS}
-      - serverless deploy --package target/test -v && cd -
+      - serverless deploy --package target/test --alias=test && cd -
       # Layers
       # - cd ${LAYERS}
       # - echo `pwd`
