@@ -1,0 +1,108 @@
+version: 0.2
+
+env:
+  variables:
+    RESOURCE_DB: "backend/resources/database"
+    RESOURCE_COGNITO: "backend/resources/cognito"
+    RESOURCE_GATEWAY: "backend/resources/gateway"
+
+    LAYERS: "backend/layers"
+
+    SERVICE_AUTH: "backend/services/auth"
+    SERVICE_CUSTOMERS: "backend/services/customers"
+    SERVICE_USERS: "backend/services/users"
+    SERVICE_MIGRATIONS: "backend/services/migrations"
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 12
+    commands:
+      - echo Time `date`
+      - npm install -g serverless@1.61.2
+      - echo Time `date`
+      - cd ${RESOURCE_DB} && npm ci && cd -
+      - cd ${RESOURCE_COGNITO} && npm ci && cd -
+      - cd ${LAYERS} && npm ci && cd -
+      - cd ${LAYERS}/helper_lib && npm ci && cd -
+      - cd ${LAYERS}/users_lib && npm ci && cd -
+
+      - cd backend && npm ci && cd -
+      - cd ${SERVICE_AUTH} && npm ci && cd -
+      - cd ${SERVICE_CUSTOMERS} && npm ci && cd -
+      - cd ${SERVICE_USERS} && npm ci && cd -
+      - cd ${SERVICE_MIGRATIONS} && npm ci && cd -
+      - echo Time `date`
+    finally:
+      - echo Installation finished
+  pre_build:
+    commands:
+       #Compile layers
+      - cd ${LAYERS}
+      - cd helper_lib && npm run compile
+      - cd ../
+      - cd users_lib && npm run compile
+      - cd ../../../
+  build:
+    commands:
+      - echo Time `date`
+      # DB
+      - echo `pwd`
+      - cd ${RESOURCE_DB} && serverless deploy && cd -
+      - echo Time `date`
+      # Cognito
+      - echo `pwd`
+      - cd ${RESOURCE_COGNITO} && serverless deploy && cd -
+      - echo Time `date`
+      # Gateway
+      - echo Time `date`
+      - echo `pwd`
+      - cd ${RESOURCE_GATEWAY} && serverless deploy && cd -
+
+      # Layers
+      - echo Time `date`
+      - echo `pwd`
+      - cd ${LAYERS} && serverless deploy && cd -
+      - echo Time `date`
+
+      # Auth
+      - cd ${SERVICE_AUTH} && serverless deploy && cd -
+      # Customers
+      - cd ${SERVICE_CUSTOMERS} && serverless deploy && cd -
+      # Users
+      - cd ${SERVICE_USERS} && serverless deploy && cd -
+      # Migrations
+      - cd ${SERVICE_MIGRATIONS} && serverless deploy && cd -
+
+    finally:
+      - echo Build finished
+
+# artifacts:
+#   files:
+#   # DB
+#   - ${RESOURCE_DB}/target/**/*
+#   - ${RESOURCE_DB}/node_modules/**/*
+#   - ${RESOURCE_DB}/serverless.yml
+#   # Cognito
+#   - ${RESOURCE_COGNITO}/target/**/*
+#   - ${RESOURCE_COGNITO}/node_modules/**/*
+#   - ${RESOURCE_COGNITO}/serverless.yml
+#   # Gateway
+#   - ${GATEWAY}/target/**/*
+#   - ${GATEWAY}/serverless.yml
+#   # Layers
+#   - ${LAYERS}/helper_lib/**/*
+#   - ${LAYERS}/users_lib/**/*
+#   - ${LAYERS}/target/**/*
+#   - ${LAYERS}/node_modules/**/*
+#   - ${LAYERS}/serverless.yml
+#   # Common
+#   - serverless.common.yml
+#   - codebuild/buildspec-deploy-resources.yml
+#   - backend/resources/stack-outputs/*
+
+cache:
+  paths:
+    - node_modules/**/*
+    - ${RESOURCE_DB}/node_modules
+    - ${RESOURCE_COGNITO}/node_modules
