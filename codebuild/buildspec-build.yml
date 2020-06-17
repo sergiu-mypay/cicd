@@ -8,10 +8,6 @@ env:
 
     LAYERS: "backend/layers"
 
-    SERVICE_AUTH: "backend/services/auth"
-    SERVICE_USERS: "backend/services/users"
-    SERVICE_CUSTOMERS: "backend/services/customers"
-
 phases:
   install:
     runtime-versions:
@@ -93,6 +89,6 @@ artifacts:
 
 cache:
   paths:
-    # - node_modules/**/*
-    # - ${RESOURCE_DB}/node_modules
-    # - ${RESOURCE_COGNITO}/node_modules
+    - node_modules/**/*
+    - ${RESOURCE_DB}/node_modules
+    - ${RESOURCE_COGNITO}/node_modules

@@ -24,13 +24,13 @@ phases:
     commands:
       # DB
       - cd ${RESOURCE_DB}
-      - serverless deploy --package target/test -v && cd -
+      - serverless deploy --package target/test  && cd -
       # Cognito
       - cd ${RESOURCE_COGNITO}
-      - serverless deploy --package target/test -v && cd -
+      - serverless deploy --package target/test  && cd -
       # Gateway
       - cd ${RESOURCE_GATEWAY}
-      - serverless deploy --package target/test -v && cd -
+      - serverless deploy --package target/test  && cd -
       # Layers
       # - cd ${LAYERS}
       # - echo `pwd`
