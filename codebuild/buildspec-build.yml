@@ -17,7 +17,7 @@ phases:
     runtime-versions:
       nodejs: 12
     commands:
-      - npm install -g serverless
+      - npm install -g serverless@1.61.2
       - cd ${RESOURCE_DB} && npm ci && cd -
       - cd ${RESOURCE_COGNITO} && npm ci && cd -
       - cd ${LAYERS} && npm ci && cd -
@@ -81,6 +81,7 @@ artifacts:
 
 cache:
   paths:
+    - **/*
     - ${RESOURCE_DB}/node_modules
     - ${RESOURCE_COGNITO}/node_modules
     - ${LAYERS}/**/*
