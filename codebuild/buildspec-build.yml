@@ -26,12 +26,17 @@ phases:
   build:
     commands:
       # Add tests and lint
+      - mkdir -p ${RESOURCE_DB}/target/test
+      - mkdir -p ${RESOURCE_COGNITO}/target/test
+      - mkdir -p ${GATEWAY}/target/test
+      - mkdir -p ${LAYERS}/target
       # DB
-      - cd ${RESOURCE_DB} && mkdir -p target/test && serverless package --package target/test
+      - cd ${RESOURCE_DB} && serverless package --package target/test
       # - mkdir -p target/test
       # - serverless package --package target/test
       # - cd ../../../
       # Cognito
+      - cd ${RESOURCE_COGNITO} && serverless package --package target/test
       # - cd ${RESOURCE_COGNITO}
       # - mkdir -p target/test
       # - serverless package --package target/test
