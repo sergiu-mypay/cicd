@@ -13,6 +13,13 @@ env:
     SERVICE_CUSTOMERS: "backend/services/customers"
 
 phases:
+  install:
+    runtime-versions:
+      nodejs: 12
+    commands:
+      - npm install -g serverless@1.61.2
+    finally:
+      - echo Installation finished
   build:
     commands:
       # DB
