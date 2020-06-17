@@ -25,6 +25,7 @@ phases:
       - cd ${RESOURCE_COGNITO} && npm ci && cd -
       - cd ${LAYERS} && npm ci && cd -
       - cd ${LAYERS}/helper_lib && npm ci && cd -
+      - cd ${LAYERS}/helper_lib/dist/nodejs && npm ci && cd -
       - cd ${LAYERS}/users_lib && npm ci && cd -
 
       - cd backend && npm ci && cd -
