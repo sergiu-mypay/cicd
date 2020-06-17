@@ -18,9 +18,9 @@ phases:
 
   pre_build:
     commands:
-       #Compile layers
-      - cd ${SERVICE_MIGRATIONS}
-      - serverless migrations-up --package target/test -v && cd -
+       # Migrations
+      # - cd ${SERVICE_MIGRATIONS}
+      # - serverless migrations-up --package target/test -v && cd -
   build:
     commands:
       # DB
