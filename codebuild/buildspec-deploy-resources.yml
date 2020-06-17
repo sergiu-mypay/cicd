@@ -33,6 +33,6 @@ phases:
       - serverless deploy --package target/test -v && cd -
       # Cognito
       - cd ${LAYERS}
-      - SLS_DEBUG=1 serverless deploy --package target -v && cd -
+      - SLS_DEBUG=1 serverless deploy --package -v && cd -
     finally:
       - echo Deploy finished
