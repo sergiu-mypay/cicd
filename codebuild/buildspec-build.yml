@@ -42,14 +42,7 @@ phases:
       - echo Time `date`
       # DB
       - echo `pwd`
-      - |
-        changes() {
-          git diff --name-only --diff-filter=AMDR --cached @~..@
-        }
-
-        if changes | grep -q dirname {
-          echo "start expensive operation"
-        }
+      - echo `git diff --name-only --diff-filter=AMDR --cached @~..@`
       - cd ${RESOURCE_DB} && serverless package --package target/test && cd -
       - echo Time `date`
       # Cognito
