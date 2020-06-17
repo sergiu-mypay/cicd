@@ -62,6 +62,7 @@ artifacts:
   - ${SERVICE_MIGRATIONS}/node_modules/**/*
   - ${SERVICE_MIGRATIONS}/serverless.yml
   # Common
+  - backend/node_modules/**/*
   - serverless.common.yml
   - codebuild/buildspec-deploy-services.yml
 
