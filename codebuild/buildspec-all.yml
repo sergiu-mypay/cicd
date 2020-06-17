@@ -48,7 +48,7 @@ phases:
       - echo Time `date`
       # DB
       - echo `pwd`
-      - cd ${RESOURCE_DB} && serverless deploy && cd -
+      - cd ${RESOURCE_DB} && SLS_DEBUG=1 serverless deploy && cd -
       - echo Time `date`
       # Cognito
       - echo `pwd`
