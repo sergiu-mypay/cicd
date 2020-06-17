@@ -71,9 +71,7 @@ artifacts:
   - ${GATEWAY}/target/**/*
   - ${GATEWAY}/serverless.yml
   # Layers
-  - ${LAYERS}/target/**/*
-  - ${LAYERS}/node_modules/**/*
-  - ${LAYERS}/serverless.yml
+  - ${LAYERS}/**/*
   # Common
   - serverless.common.yml
   - codebuild/buildspec-deploy-resources.yml
