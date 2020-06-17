@@ -18,7 +18,7 @@ phases:
       nodejs: 12
     commands:
       - echo Time `date`
-      - npm ci -g serverless@1.61.2
+      - npm install -g serverless@1.61.2
       - echo Time `date`
       - cd ${RESOURCE_DB} && npm ci && cd -
       - cd ${RESOURCE_COGNITO} && npm ci && cd -
@@ -93,7 +93,7 @@ artifacts:
 
 cache:
   paths:
-    - /usr/local/lib/node_modules/serverless/**/*
-    - node_modules/**/*
-    - ${RESOURCE_DB}/node_modules
-    - ${RESOURCE_COGNITO}/node_modules
+    - '/usr/local/lib/node_modules/serverless/**/*'
+    - 'node_modules/**/*'
+    - `${RESOURCE_DB}/node_modules`
+    - `${RESOURCE_COGNITO}/node_modules`
