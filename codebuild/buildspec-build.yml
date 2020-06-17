@@ -20,7 +20,6 @@ phases:
       - npm install -g serverless
       - cd ${RESOURCE_DB} && npm ci && cd -
       - cd ${RESOURCE_COGNITO} && npm ci && cd -
-      - cd ${RESOURCE_GATEWAY} && npm ci && cd -
       - cd ${LAYERS} && npm ci && cd -
     finally:
       - echo Installation finished
@@ -64,7 +63,6 @@ artifacts:
   - ${RESOURCE_COGNITO}/serverless.yml
   # Gateway
   - ${GATEWAY}/target/**/*
-  - ${GATEWAY}/node_modules/**/*
   - ${GATEWAY}/serverless.yml
   # Layers
   - ${LAYERS}/target/**/*
@@ -79,4 +77,3 @@ cache:
   paths:
     - ${RESOURCE_DB}/node_modules
     - ${RESOURCE_COGNITO}/node_modules
-    - ${GATEWAY}/node_modules
