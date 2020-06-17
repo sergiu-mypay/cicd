@@ -91,9 +91,9 @@ artifacts:
   - codebuild/buildspec-deploy-resources.yml
   - backend/resources/stack-outputs/*
 
-cache:
-  paths:
-    - '/usr/local/lib/node_modules/serverless/**/*'
-    - 'node_modules/**/*'
-    - `${RESOURCE_DB}/node_modules`
-    - `${RESOURCE_COGNITO}/node_modules`
+# cache:
+#   paths:
+    # - /usr/local/lib/node_modules/serverless/**/*
+    # - node_modules/**/*
+    # - ${RESOURCE_DB}/node_modules
+    # - ${RESOURCE_COGNITO}/node_modules
