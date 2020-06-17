@@ -52,7 +52,7 @@ phases:
 
       # Layers
       - echo `pwd`
-      - cd ${LAYERS} && serverless package --package target/test && cd -
+      - cd ${LAYERS} && serverless package --package target && cd -
 
     finally:
       - echo Packaging finished
