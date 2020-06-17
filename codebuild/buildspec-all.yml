@@ -67,13 +67,18 @@ phases:
       - echo Time `date`
 
       # Auth
-      - cd ${SERVICE_AUTH} && SLS_DEBUG=1 serverless deploy && cd -
+      - cd ${SERVICE_AUTH} && SLS_DEBUG=1 serverless deploy --alias=test && cd -
       # Customers
-      - cd ${SERVICE_CUSTOMERS} && serverless deploy && cd -
+      - cd ${SERVICE_CUSTOMERS} && serverless deploy --alias=test && cd -
       # Users
-      - cd ${SERVICE_USERS} && serverless deploy && cd -
+      - cd ${SERVICE_USERS} && serverless deploy --alias=test && cd -
       # Migrations
-      - cd ${SERVICE_MIGRATIONS} && serverless deploy && cd -
+      - cd ${SERVICE_MIGRATIONS} && serverless deploy --alias=test && cd -
+  post_build:
+    commands:
+      - echo Executing migrations
+      - cd ${SERVICE_MIGRATIONS} && serverless migrations-up
+      - echo Migrations executed on `date`
 
     finally:
       - echo Build finished
