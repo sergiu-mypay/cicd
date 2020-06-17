@@ -31,8 +31,7 @@ phases:
       - cd ${LAYERS}
       - cd helper_lib && npm run compile
       - cd ../
-      - cd users_lib && npm run compile
-      - cd -
+      - cd users_lib && npm run compile && cd -
   build:
     commands:
       # TODO Add tests and lint
@@ -42,21 +41,21 @@ phases:
       - mkdir -p ${LAYERS}/target
       # DB
       - echo `pwd`
-      - cd ${RESOURCE_DB} && serverless package --package target/test
-      - cd -
+      - cd ${RESOURCE_DB} && serverless package --package target/test && cd -
+      # - cd ../../../
       # Cognito
       - echo `pwd`
-      - cd ${RESOURCE_COGNITO} && serverless package --package target/test
-      - cd -
+      - cd ${RESOURCE_COGNITO} && serverless package --package target/test && cd -
+      # - cd ../../../
       # Gateway
       - echo `pwd`
-      - cd ${RESOURCE_GATEWAY} && serverless package --package target/test
-      - cd -
+      - cd ${RESOURCE_GATEWAY} && serverless package --package target/test && cd -
+      # - cd ../../../
 
       # Layers
       - echo `pwd`
-      - cd ${LAYERS} && serverless package --package target/test
-      - cd -
+      - cd ${LAYERS} && serverless package --package target/test && cd -
+      # - cd ../../
 
     finally:
       - echo Packaging finished
