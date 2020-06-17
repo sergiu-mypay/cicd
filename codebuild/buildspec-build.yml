@@ -72,6 +72,8 @@ artifacts:
   - ${GATEWAY}/serverless.yml
   # Layers
   - ${LAYERS}/**/*
+  - ${LAYERS}/.serverless/**/*
+  - ${LAYERS}/serverless.yml
   # Common
   - serverless.common.yml
   - codebuild/buildspec-deploy-resources.yml
