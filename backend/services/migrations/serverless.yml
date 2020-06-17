@@ -3,8 +3,8 @@ service: mypay-migrations
 plugins:
   - serverless-offline
   # - serverless-bundle
-  - serverless-plugin-custom-roles
   - serverless-plugin-scripts
+  - serverless-aws-alias
 
 provider:
   name: aws
@@ -26,9 +26,23 @@ custom:
     linting: false #Ignore for compilation
     ignorePackages:
       - pg-hstore
-      # - pg-native
     forceInclude:
       - aws-sdk
+  
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - rds-data:ExecuteStatement
+        - rds-data:BatchExecuteStatement
+        - rds-data:BeginTransaction
+        - rds-data:CommitTransaction
+        - rds-data:RollbackTransaction
+      Resource: '*'
+    - Effect: Allow
+      Action:
+        - secretsmanager:GetSecretValue
+      Resource:
+        'Fn::ImportValue': ${self:custom.stage}-SecretManagerArn
   
   scripts:
     commands:
@@ -38,33 +52,5 @@ custom:
 functions:
   ServiceMigrationsUp:
     handler: functions/migrations-up-handler.migrationsUp
-    iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - rds-data:ExecuteStatement
-        - rds-data:BatchExecuteStatement
-        - rds-data:BeginTransaction
-        - rds-data:CommitTransaction
-        - rds-data:RollbackTransaction
-      Resource: '*'
-    - Effect: Allow
-      Action:
-        - secretsmanager:GetSecretValue
-      Resource:
-        'Fn::ImportValue': ${self:custom.stage}-SecretManagerArn
   ServiceMigrationsDown:
     handler: functions/migrations-down-handler.migrationsDown
-    iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - rds-data:ExecuteStatement
-        - rds-data:BatchExecuteStatement
-        - rds-data:BeginTransaction
-        - rds-data:CommitTransaction
-        - rds-data:RollbackTransaction
-      Resource: '*'
-    - Effect: Allow
-      Action:
-        - secretsmanager:GetSecretValue
-      Resource:
-        'Fn::ImportValue': ${self:custom.stage}-SecretManagerArn

@@ -3,23 +3,22 @@
 const AWS = require('aws-sdk');
 const cognitoServiceProvider = new AWS.CognitoIdentityServiceProvider();
 
-var response = () => { };
-var UserModel = () => { };
-var sequelize = () => { };
-var Sequelize = () => { };
+var response = process.env.IS_OFFLINE ? require('../../../layers/helper_lib/src/response.helper').response : require('mypay-helpers').response;
+var UserModel = process.env.IS_OFFLINE ? require('../../../layers/users_lib/src/user').UserModel : require('users-helpers').UserModel;
+var sequelize = process.env.IS_OFFLINE ? require('../../../layers/helper_lib/src/mysql-db').sequelize : require('mypay-helpers').sequelize;
+var Sequelize = process.env.IS_OFFLINE ? require('../../../layers/helper_lib/src/mysql-db').Sequelize : require('mypay-helpers').Sequelize;
 
-if (process.env.IS_OFFLINE) {
-    response = require('../../../layers/helper_lib/src/response.helper').response;
-    UserModel = require('../../../layers/users_lib/src/user').UserModel;
-    sequelize = require('../../../layers/helper_lib/src/mysql-db').sequelize;
-    Sequelize = require('../../../layers/helper_lib/src/mysql-db').Sequelize;
-}
-else {
-    response = require('mypay-helpers').response;
-    UserModel = require('users-helpers').UserModel;
-    sequelize = require('mypay-helpers').sequelize;
-    Sequelize = require('mypay-helpers').Sequelize;
-}
+const database = process.env.STAGE + '_database';
+// Arn of Aurora serverless cluster cluster
+const host = process.env.DB_RESOURCE_ARN;
+
+// This param is ignored by the wrapper.
+const username = '';
+
+// Arn of secrets manager secret containing the rds credentials
+const password = process.env.SECRET_ARN;
+
+const User = UserModel(sequelize(host, database, username, password), Sequelize);
 
 export const remove = async (event) => {
   try {
@@ -31,7 +30,7 @@ export const remove = async (event) => {
     })
 
     if(result.isSuccesfully) {
-      // await deleteUserFromDb(email);
+      await deleteUserFromDb(email);
       return response({ email });
     } else {
       const error = result.err;
@@ -61,10 +60,10 @@ const deleteUserFromCognito = (params) => {
   });
 }
 
-// const deleteUserFromDb = async (email) => {
-//   await User.destroy({
-//     where: {
-//       email
-//     }
-// });
-// }
+const deleteUserFromDb = async (email) => {
+  await User.destroy({
+    where: {
+      email
+    }
+});
+}

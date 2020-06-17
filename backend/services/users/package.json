@@ -6,7 +6,9 @@
   "author": "",
   "license": "",
   "devDependencies": {
-    "serverless-plugin-custom-roles": "^1.1.1"
+    "serverless-aws-alias": "^1.8.0",
+    "serverless-plugin-ifelse": "^1.0.5",
+    "serverless-stack-output": "^0.2.3"
   },
   "dependencies": {
     "aws-sdk": "^2.695.0",

@@ -1,0 +1,34 @@
+Signup:
+  handler: functions/signup-handler.signUp
+  events:
+  - http:
+      path: ${self:custom.authEntityPath}/signup
+      method: post
+      cors: true
+      request:
+        schema:
+          application/json: ${file(validators/signup-validator.json)}
+  layers:
+    - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+    - ${file(../../layers/layers-outputs.yml):UserslibLambdaLayerQualifiedArn}
+Login:
+  handler: functions/login-handler.login
+  events:
+  - http:
+      path: ${self:custom.authEntityPath}/login
+      method: post
+      cors: true
+      request:
+        schema:
+          application/json: ${file(validators/login-validator.json)}
+  layers:
+    - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+ChangePassword:
+  handler: functions/changePassword-handler.changePassword
+  events:
+  - http:
+      path: ${self:custom.authEntityPath}/changePassword
+      method: post
+      cors: true
+  layers:
+    - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}

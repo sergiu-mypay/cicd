@@ -6,23 +6,22 @@ const AWS = require('aws-sdk');
 const cognitoServiceProvider = new AWS.CognitoIdentityServiceProvider();
 const userPoolId = process.env.COGNITO_USER_POOL_ID;
 
-var response = () => { };
-var UserModel = () => { };
-var sequelize = () => { };
-var Sequelize = () => { };
+var response = process.env.IS_OFFLINE ? require('../../../layers/helper_lib/src/response.helper').response : require('mypay-helpers').response;
+var UserModel = process.env.IS_OFFLINE ? require('../../../layers/users_lib/src/user').UserModel : require('users-helpers').UserModel;
+var sequelize = process.env.IS_OFFLINE ? require('../../../layers/helper_lib/src/mysql-db').sequelize : require('mypay-helpers').sequelize;
+var Sequelize = process.env.IS_OFFLINE ? require('../../../layers/helper_lib/src/mysql-db').Sequelize : require('mypay-helpers').Sequelize;
 
-if (process.env.IS_OFFLINE) {
-    response = require('../../../layers/helper_lib/src/response.helper').response;
-    UserModel = require('../../../layers/users_lib/src/user').UserModel;
-    sequelize = require('../../../layers/helper_lib/src/mysql-db').sequelize;
-    Sequelize = require('../../../layers/helper_lib/src/mysql-db').Sequelize;
-}
-else {
-    response = require('mypay-helpers').response;
-    UserModel = require('users-helpers').UserModel;
-    sequelize = require('mypay-helpers').sequelize;
-    Sequelize = require('mypay-helpers').Sequelize;
-}
+const database = process.env.STAGE + '_database';
+// Arn of Aurora serverless cluster cluster
+const host = process.env.DB_RESOURCE_ARN;
+
+// This param is ignored by the wrapper.
+const username = '';
+
+// Arn of secrets manager secret containing the rds credentials
+const password = process.env.SECRET_ARN;
+
+const User = UserModel(sequelize(host, database, username, password), Sequelize);
 
 export const createUser = async event => {
 
@@ -59,33 +58,33 @@ export const createUser = async event => {
 
   try {
 
-    // var usersCount = await User.count({
-    //   where: {
-    //     email: body.email
-    //   }
-    // });
+    var usersCount = await User.count({
+      where: {
+        email: body.email
+      }
+    });
     
-    // if(usersCount > 0)
-    // {
-    //   return response({
-    //     error: "User already exists"
-    //   }, 400);
-    // }
+    if(usersCount > 0)
+    {
+      return response({
+        error: "User already exists"
+      }, 400);
+    }
 
-    // const user = User.build({
-    //   email: body.email,
-    //   lastName: body.lastName,
-    //   firstName: body.firstName
-    // });
+    const user = User.build({
+      email: body.email,
+      lastName: body.lastName,
+      firstName: body.firstName
+    });
 
-    // await user.save();
+    await user.save();
 
     var cognitoResponse = await CreateUserInCognito(params);
 
-    // if(cognitoResponse.statusCode !== 201)
-    // {
-    //   await user.destroy();
-    // }
+    if(cognitoResponse.statusCode !== 201)
+    {
+      await user.destroy();
+    }
 
     return cognitoResponse;
 

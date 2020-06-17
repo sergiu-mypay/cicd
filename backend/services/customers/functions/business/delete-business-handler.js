@@ -1,13 +1,6 @@
 const axios = require('axios').default;
 
-var response = () => {}
-
-if (process.env.IS_OFFLINE) {
-    response = require('../../../../layers/helper_lib/src/response.helper').response;
-}
-else {
-    response = require('mypay-helpers').response;
-}
+var response = process.env.IS_OFFLINE ? require('../../../layers/helper_lib/src/response.helper').response : require('mypay-helpers').response;
 
 export const deleteBusiness = async(event) => {
     const businessId = event.pathParameters.id;

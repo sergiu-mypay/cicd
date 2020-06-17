@@ -4,14 +4,7 @@ require('dotenv').config();
 import {CognitoUserPool, CognitoUser, AuthenticationDetails} from 'amazon-cognito-identity-js';
 global.fetch = require('node-fetch').default;
 
-var response = () => {}
-
-if (process.env.IS_OFFLINE) {
-    response = require('../../../layers/helper_lib/src/response.helper').response;
-}
-else {
-    response = require('mypay-helpers').response;
-}
+var response = process.env.IS_OFFLINE ? require('../../../layers/helper_lib/src/response.helper').response : require('mypay-helpers').response;
 
 const poolData = {
     UserPoolId: process.env.COGNITO_USER_POOL_ID,

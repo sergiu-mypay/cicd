@@ -3,7 +3,8 @@ service: mypay-customers
 plugins:
   - serverless-offline
   - serverless-bundle
-  - serverless-plugin-custom-roles
+  - serverless-stack-output
+  - serverless-aws-alias
 
 provider:
   name: aws
@@ -12,11 +13,24 @@ provider:
   environment:
     COGNITO_USER_POOL_ID: ${file(../../resources/stack-outputs/cognito-${self:custom.stage}.yml):CognitoUserPoolId}
     COGNITO_CLIENT_ID: ${file(../../resources/stack-outputs/cognito-${self:custom.stage}.yml):CognitoUserPoolClientId}
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - rds-data:ExecuteStatement
+        - rds-data:BatchExecuteStatement
+        - rds-data:BeginTransaction
+        - rds-data:CommitTransaction
+        - rds-data:RollbackTransaction
+      Resource: '*'
+    - Effect: Allow
+      Action:
+        - secretsmanager:GetSecretValue
+      Resource:
+        'Fn::ImportValue': ${self:custom.stage}-SecretManagerArn
   
 custom:
   defaultStage: ${file(../../../serverless.common.yml):custom.defaultStage}
-  resourcesStages: ${file(../../../serverless.common.yml):custom.resourcesStages}
-  resourceStage: ${file(../../../serverless.common.yml):custom.resourcesStage}
   stage: ${file(../../../serverless.common.yml):custom.stage}
   baseApiPath: ${file(../../../serverless.common.yml):custom.baseApiPath}
 
@@ -31,75 +45,9 @@ custom:
     ignorePackages:
       # only on aws
       - ../../../layers/helper_lib/src/response.helper
+
+  output:
+    file: stack-outputs/customer-${self:provider.alias}.yml
   
 functions:
-  ServiceCustomersHierarchy:
-    handler: functions/get-hierarchy-handler.getHierarchy
-    events:
-      - http:
-          path: ${self:custom.businessEntityPath}/getHierarchy
-          method: get
-          cors: true
-    layers:
-      - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
-  ServiceBusinessGet:
-    handler: functions/business/get-businesses-handler.getBusinesses
-    events:
-      - http:
-          path: ${self:custom.businessEntityPath}
-          method: get
-          cors: true
-    layers:
-      - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
-
-  ServiceBusinessGetById:
-    handler: functions/business/get-business-handler.getBusiness
-    events:
-      - http:
-          path: ${self:custom.businessEntityPath}/{id}
-          method: get
-          cors: true
-          request:
-            parameters:
-              paths:
-                id: true
-    layers:
-      - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
-
-  ServiceBusinessCreate:
-    handler: functions/business/create-business-handler.createBusiness
-    events:
-      - http:
-          path: ${self:custom.businessEntityPath}
-          method: post
-          cors: true
-    layers:
-      - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
-
-  ServiceBusinessUpdate:
-    handler: functions/business/update-business-handler.updateBusiness
-    events:
-      - http:
-          path: ${self:custom.businessEntityPath}/{id}
-          method: put
-          cors: true
-          request:
-            parameters:
-              paths:
-                id: true
-    layers:
-      - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
-
-  ServiceBusinessDelete:
-    handler: functions/business/delete-business-handler.deleteBusiness
-    events:
-      - http:
-          path: ${self:custom.businessEntityPath}/{id}
-          method: delete
-          cors: true
-          request:
-            parameters:
-              paths:
-                id: true
-    layers:
-      - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+  - ${file(functions.yml)}

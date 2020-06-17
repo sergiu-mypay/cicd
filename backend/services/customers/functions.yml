@@ -1,0 +1,70 @@
+Hierarchy:
+  handler: functions/get-hierarchy-handler.getHierarchy
+  events:
+    - http:
+        path: ${self:custom.businessEntityPath}/getHierarchy
+        method: get
+        cors: true
+  layers:
+    - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+BusinessGet:
+  handler: functions/business/get-businesses-handler.getBusinesses
+  events:
+    - http:
+        path: ${self:custom.businessEntityPath}
+        method: get
+        cors: true
+  layers:
+    - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+
+BusinessGetById:
+  handler: functions/business/get-business-handler.getBusiness
+  events:
+    - http:
+        path: ${self:custom.businessEntityPath}/{id}
+        method: get
+        cors: true
+        request:
+          parameters:
+            paths:
+              id: true
+  layers:
+    - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+
+BusinessCreate:
+  handler: functions/business/create-business-handler.createBusiness
+  events:
+    - http:
+        path: ${self:custom.businessEntityPath}
+        method: post
+        cors: true
+  layers:
+    - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+
+BusinessUpdate:
+  handler: functions/business/update-business-handler.updateBusiness
+  events:
+    - http:
+        path: ${self:custom.businessEntityPath}/{id}
+        method: put
+        cors: true
+        request:
+          parameters:
+            paths:
+              id: true
+  layers:
+    - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+
+BusinessDelete:
+  handler: functions/business/delete-business-handler.deleteBusiness
+  events:
+    - http:
+        path: ${self:custom.businessEntityPath}/{id}
+        method: delete
+        cors: true
+        request:
+          parameters:
+            paths:
+              id: true
+  layers:
+    - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}

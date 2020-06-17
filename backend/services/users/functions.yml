@@ -1,0 +1,66 @@
+Get:
+  handler: functions/get-users-handler.getUsers
+  events:
+  - http:
+      path: ${self:custom.usersEntityPath}
+      method: get
+      cors: true
+  layers:
+    - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+    - ${file(../../layers/layers-outputs.yml):UserslibLambdaLayerQualifiedArn}
+
+GetByPropertyValue:
+  handler: functions/get-user-handler.getUser
+  events:
+  - http:
+      path: ${self:custom.usersEntityPath}/{property}/{value}
+      method: get
+      cors: true
+      request:
+        parameters:
+          paths:
+            property: true
+            value: true
+  layers:
+    - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+    - ${file(../../layers/layers-outputs.yml):UserslibLambdaLayerQualifiedArn}
+
+Create:
+  handler: functions/create-user-handler.createUser
+  events:
+  - http:
+      path: ${self:custom.usersEntityPath}
+      method: post
+  layers:
+    - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+    - ${file(../../layers/layers-outputs.yml):UserslibLambdaLayerQualifiedArn}
+
+Delete:
+  handler: functions/delete-user-handler.remove
+  events:
+  - http:
+      path: ${self:custom.usersEntityPath}/delete/{email}
+      method: delete
+      cors: true
+      request:
+        parameters:
+          paths:
+            email: true
+  layers:
+    - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+    - ${file(../../layers/layers-outputs.yml):UserslibLambdaLayerQualifiedArn}
+              
+ToggleDisableEnable:
+  handler: functions/toggle-disable-enable-user-handler.toggleDisableEnable
+  events:
+  - http:
+      path: ${self:custom.usersEntityPath}/toggleDisableEnable/{email}
+      method: patch
+      cors: true
+      request:
+        parameters:
+          paths:
+            email: true
+  layers:
+    - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+    - ${file(../../layers/layers-outputs.yml):UserslibLambdaLayerQualifiedArn}

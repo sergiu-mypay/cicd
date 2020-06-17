@@ -6,23 +6,10 @@ import { CognitoUserPool, CognitoUserAttribute } from 'amazon-cognito-identity-j
 global.fetch = require('node-fetch').default;
 
 
-var response = () => { };
-var UserModel = () => { };
-var sequelize = () => { };
-var Sequelize = () => { };
-
-if (process.env.IS_OFFLINE) {
-    response = require('../../../layers/helper_lib/src/response.helper').response;
-    UserModel = require('../../../layers/users_lib/src/user').UserModel;
-    sequelize = require('../../../layers/helper_lib/src/mysql-db').sequelize;
-    Sequelize = require('../../../layers/helper_lib/src/mysql-db').Sequelize;
-}
-else {
-    response = require('mypay-helpers').response;
-    UserModel = require('users-helpers').UserModel;
-    sequelize = require('mypay-helpers').sequelize;
-    Sequelize = require('mypay-helpers').Sequelize;
-}
+var response = process.env.IS_OFFLINE ? require('../../../layers/helper_lib/src/response.helper').response : require('mypay-helpers').response;
+var UserModel = process.env.IS_OFFLINE ? require('../../../layers/users_lib/src/user').UserModel : require('users-helpers').UserModel;
+var sequelize = process.env.IS_OFFLINE ? require('../../../layers/helper_lib/src/mysql-db').sequelize : require('mypay-helpers').sequelize;
+var Sequelize = process.env.IS_OFFLINE ? require('../../../layers/helper_lib/src/mysql-db').Sequelize : require('mypay-helpers').Sequelize;
 
 
 const database = process.env.STAGE + '_database';

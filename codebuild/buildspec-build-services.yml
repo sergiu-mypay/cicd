@@ -1,0 +1,74 @@
+version: 0.2
+
+env:
+  variables:
+    SERVICE_AUTH: "backend/services/auth"
+    SERVICE_CUSTOMERS: "backend/services/customers"
+    SERVICE_USERS: "backend/services/users"
+    SERVICE_MIGRATIONS: "backend/services/migrations"
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 12
+    commands:
+      - npm install -g serverless@1.61.2
+      - cd backend && npm ci && cd -
+      - cd ${SERVICE_AUTH} && npm ci && cd -
+      - cd ${SERVICE_CUSTOMERS} && npm ci && cd -
+      - cd ${SERVICE_USERS} && npm ci && cd -
+      - cd ${SERVICE_MIGRATIONS} && npm ci && cd -
+    finally:
+      - echo Installation finished
+  build:
+    commands:
+      # TODO Add tests and lint
+      - mkdir -p ${SERVICE_AUTH}/target/test
+      - mkdir -p ${SERVICE_CUSTOMERS}/target/test
+      - mkdir -p ${SERVICE_USERS}/target/test
+      - mkdir -p ${SERVICE_MIGRATIONS}/target/test
+      # Auth
+      - echo `pwd`
+      - cd ${SERVICE_AUTH} && serverless package --package target/test --alias=test && cd -
+      # Customers
+      - echo `pwd`
+      - cd ${SERVICE_CUSTOMERS} && serverless package --package target/test --alias=test && cd -
+      # Users
+      - echo `pwd`
+      - cd ${SERVICE_USERS} && serverless package --package target/test --alias=test && cd -
+      # Migrations
+      - echo `pwd`
+      - cd ${SERVICE_MIGRATIONS} && serverless package --package target/test --alias=test && cd -
+
+    finally:
+      - echo Packaging finished
+
+artifacts:
+  files:
+  # DB
+  - ${SERVICE_AUTH}/target/**/*
+  - ${SERVICE_AUTH}/node_modules/**/*
+  - ${SERVICE_AUTH}/serverless.yml
+  # Cognito
+  - ${SERVICE_CUSTOMERS}/target/**/*
+  - ${SERVICE_CUSTOMERS}/node_modules/**/*
+  - ${SERVICE_CUSTOMERS}/serverless.yml
+  # Gateway
+  - ${SERVICE_USERS}/target/**/*
+  - ${SERVICE_USERS}/node_modules/**/*
+  - ${SERVICE_USERS}/serverless.yml
+  # Layers
+  - ${SERVICE_MIGRATIONS}/target/**/*
+  - ${SERVICE_MIGRATIONS}/node_modules/**/*
+  - ${SERVICE_MIGRATIONS}/serverless.yml
+  # Common
+  - serverless.common.yml
+  - codebuild/buildspec-deploy-services.yml
+
+cache:
+  paths:
+    - backend/node_modules/**/*
+    - ${SERVICE_AUTH}/node_modules
+    - ${SERVICE_CUSTOMERS}/node_modules
+    - ${SERVICE_USERS}/node_modules
+    - ${SERVICE_MIGRATIONS}/node_modules

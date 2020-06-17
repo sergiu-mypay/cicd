@@ -3,7 +3,9 @@ service: mypay-users
 plugins:
   - serverless-offline
   - serverless-bundle
-  - serverless-plugin-custom-roles
+  - serverless-stack-output
+  - serverless-aws-alias
+  - serverless-plugin-ifelse
 
 provider:
   name: aws
@@ -11,19 +13,47 @@ provider:
   region: us-east-1
   environment:
     COGNITO_USER_POOL_ID: ${file(../../resources/stack-outputs/cognito-${self:custom.stage}.yml):CognitoUserPoolId}
+    STAGE: ${self:custom.stage}
+    DB_RESOURCE_ARN: ${file(../../resources/stack-outputs/database-${self:custom.stage}.yml):DbClusterArn}
+    SECRET_ARN: ${file(../../resources/stack-outputs/database-${self:custom.stage}.yml):SecretManagerArn}
+  
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - rds-data:ExecuteStatement
+        - rds-data:BatchExecuteStatement
+        - rds-data:BeginTransaction
+        - rds-data:CommitTransaction
+        - rds-data:RollbackTransaction
+      Resource: "*"
+    - Effect: Allow
+      Action:
+        - secretsmanager:GetSecretValue
+      Resource:
+        'Fn::ImportValue': ${self:custom.stage}-SecretManagerArn
+    - Effect: Allow
+      Action:
+        - cognito-idp:AdminCreateUser
+        - cognito-idp:AdminDeleteUser
+        - cognito-idp:AdminEnableUser
+        - cognito-idp:AdminDisableUser
+      Resource:
+        'Fn::ImportValue': ${self:custom.stage}-CognitoUserPoolArn
   
 custom:
   defaultStage: ${file(../../../serverless.common.yml):custom.defaultStage}
-  resourcesStages: ${file(../../../serverless.common.yml):custom.resourcesStages}
-  resourceStage: ${file(../../../serverless.common.yml):custom.resourcesStage}
   stage: ${file(../../../serverless.common.yml):custom.stage}
   baseApiPath: ${file(../../../serverless.common.yml):custom.baseApiPath}
 
   usersEntityPath: ${self:custom.baseApiPath}/users
+  
 
+  offlineBundles:
+    aws: ${file(bundle-aws.yml)}
+    local: ${file(bundle-offline.yml)}
 
   bundle:
-    sourcemaps: false
+    sourcemaps: true
     externals:
       - mypay-helpers
       - users-helpers
@@ -35,156 +65,8 @@ custom:
       - ../../../layers/users_lib/src/user
       - ../../../layers/helper_lib/src/mysql-db
   
+  output:
+    file: stack-outputs/user-${self:provider.alias}.yml
+  
 functions:
-  ServiceUsersGet:
-    handler: functions/get-users-handler.getUsers
-    iamRoleStatements:
-      - Effect: Allow
-        Action:
-          - rds-data:ExecuteStatement
-          - rds-data:BatchExecuteStatement
-          - rds-data:BeginTransaction
-          - rds-data:CommitTransaction
-          - rds-data:RollbackTransaction
-        Resource: "*"
-      - Effect: Allow
-        Action:
-          - secretsmanager:GetSecretValue
-        Resource:
-          'Fn::ImportValue': ${self:custom.stage}-SecretManagerArn
-    events:
-    - http:
-        path: ${self:custom.usersEntityPath}
-        method: get
-        cors: true
-    layers:
-      - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
-      - ${file(../../layers/layers-outputs.yml):UserslibLambdaLayerQualifiedArn}
-
-  ServiceUsersGetByPropertyValue:
-    handler: functions/get-user-handler.getUser
-    iamRoleStatements:
-      - Effect: Allow
-        Action:
-          - rds-data:ExecuteStatement
-          - rds-data:BatchExecuteStatement
-          - rds-data:BeginTransaction
-          - rds-data:CommitTransaction
-          - rds-data:RollbackTransaction
-        Resource: "*"
-      - Effect: Allow
-        Action:
-          - secretsmanager:GetSecretValue
-        Resource:
-          'Fn::ImportValue': ${self:custom.stage}-SecretManagerArn
-    events:
-    - http:
-        path: ${self:custom.usersEntityPath}/{property}/{value}
-        method: get
-        cors: true
-        request:
-          parameters:
-            paths:
-              property: true
-              value: true
-    layers:
-      - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
-      - ${file(../../layers/layers-outputs.yml):UserslibLambdaLayerQualifiedArn}
-
-  ServiceUsersCreate:
-    handler: functions/create-user-handler.createUser
-    iamRoleStatements:
-      - Effect: Allow
-        Action:
-          - rds-data:ExecuteStatement
-          - rds-data:BatchExecuteStatement
-          - rds-data:BeginTransaction
-          - rds-data:CommitTransaction
-          - rds-data:RollbackTransaction
-        Resource: "*"
-      - Effect: Allow
-        Action:
-          - secretsmanager:GetSecretValue
-        Resource:
-          'Fn::ImportValue': ${self:custom.stage}-SecretManagerArn
-      - Effect: Allow
-        Action:
-          - cognito-idp:AdminCreateUser
-        Resource:
-          'Fn::ImportValue': ${self:custom.stage}-CognitoUserPoolArn
-    events:
-    - http:
-        path: ${self:custom.usersEntityPath}
-        method: post
-    layers:
-      - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
-      - ${file(../../layers/layers-outputs.yml):UserslibLambdaLayerQualifiedArn}
-
-  ServiceUsersDelete:
-    handler: functions/delete-user-handler.remove
-    iamRoleStatements:
-      - Effect: Allow
-        Action:
-          - rds-data:ExecuteStatement
-          - rds-data:BatchExecuteStatement
-          - rds-data:BeginTransaction
-          - rds-data:CommitTransaction
-          - rds-data:RollbackTransaction
-        Resource: "*"
-      - Effect: Allow
-        Action:
-          - secretsmanager:GetSecretValue
-        Resource:
-          'Fn::ImportValue': ${self:custom.stage}-SecretManagerArn
-      - Effect: Allow
-        Action:
-          - cognito-idp:AdminDeleteUser
-        Resource:
-          'Fn::ImportValue': ${self:custom.stage}-CognitoUserPoolArn
-    events:
-    - http:
-        path: ${self:custom.usersEntityPath}/delete/{email}
-        method: delete
-        cors: true
-        request:
-          parameters:
-            paths:
-              email: true
-    layers:
-      - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
-      - ${file(../../layers/layers-outputs.yml):UserslibLambdaLayerQualifiedArn}
-                
-  ServiceUsersToggleDisableEnable:
-    handler: functions/toggle-disable-enable-user-handler.toggleDisableEnable
-    iamRoleStatements:
-      - Effect: Allow
-        Action:
-          - rds-data:ExecuteStatement
-          - rds-data:BatchExecuteStatement
-          - rds-data:BeginTransaction
-          - rds-data:CommitTransaction
-          - rds-data:RollbackTransaction
-        Resource: "*"
-      - Effect: Allow
-        Action:
-          - secretsmanager:GetSecretValue
-        Resource:
-          'Fn::ImportValue': ${self:custom.stage}-SecretManagerArn
-      - Effect: Allow
-        Action:
-          - cognito-idp:AdminEnableUser
-          - cognito-idp:AdminDisableUser
-        Resource:
-          'Fn::ImportValue': ${self:custom.stage}-CognitoUserPoolArn
-    events:
-    - http:
-        path: ${self:custom.usersEntityPath}/toggleDisableEnable/{email}
-        method: patch
-        cors: true
-        request:
-          parameters:
-            paths:
-              email: true
-    layers:
-      - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
-      - ${file(../../layers/layers-outputs.yml):UserslibLambdaLayerQualifiedArn}
+  - ${file(functions.yml)}

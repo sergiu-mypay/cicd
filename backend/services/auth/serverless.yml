@@ -3,7 +3,6 @@ service: mypay-auth
 plugins:
   - serverless-offline
   - serverless-bundle
-  # - serverless-plugin-custom-roles
   - serverless-stack-output
   - serverless-aws-alias
 
@@ -18,6 +17,7 @@ provider:
     DB_RESOURCE_ARN: ${file(../../resources/stack-outputs/database-${self:custom.stage}.yml):DbClusterArn}
     SECRET_ARN: ${file(../../resources/stack-outputs/database-${self:custom.stage}.yml):SecretManagerArn}
 
+  
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -43,8 +43,7 @@ custom:
   authEntityPath: ${self:custom.baseApiPath}/auth
 
   output:
-    file: stack-outputs/auth-${self:custom.stage}.yml
-
+    file: stack-outputs/auth-${self:provider.alias}.yml
   bundle:
     externals:
       - mypay-helpers
@@ -58,37 +57,4 @@ custom:
       - ../../../layers/helper_lib/src/mysql-db
   
 functions:
-  ServiceAuthSignup:
-    handler: functions/signup-handler.signUp
-    events:
-    - http:
-        path: ${self:custom.authEntityPath}/signup
-        method: post
-        cors: true
-        request:
-          schema:
-            application/json: ${file(validators/signup-validator.json)}
-    layers:
-      - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
-      - ${file(../../layers/layers-outputs.yml):UserslibLambdaLayerQualifiedArn}
-  ServiceAuthLogin:
-    handler: functions/login-handler.login
-    events:
-    - http:
-        path: ${self:custom.authEntityPath}/login
-        method: post
-        cors: true
-        request:
-          schema:
-            application/json: ${file(validators/login-validator.json)}
-    layers:
-      - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
-  ServiceChangePassword:
-    handler: functions/changePassword-handler.changePassword
-    events:
-    - http:
-        path: ${self:custom.authEntityPath}/changePassword
-        method: post
-        cors: true
-    layers:
-      - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+  - ${file(functions.yml)}

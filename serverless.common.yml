@@ -4,8 +4,7 @@ custom:
   resourcesStages:
     prod: prod
     dev: dev
-    qa: qa
-    uat: uat
+    test: test
   resourcesStage: ${self:custom.resourcesStages.${self:custom.stage}, self:custom.resourcesStages.dev}
 
   baseApiPath: api/v1
