@@ -18,7 +18,7 @@ phases:
       nodejs: 12
     commands:
       - echo Time `date`
-      - npm install -g serverless@1.61.2
+      - npm ci -g serverless@1.61.2
       - echo Time `date`
       - cd ${RESOURCE_DB} && npm ci && cd -
       - cd ${RESOURCE_COGNITO} && npm ci && cd -
