@@ -31,8 +31,9 @@ phases:
       # Gateway
       - cd ${RESOURCE_GATEWAY}
       - serverless deploy --package target/test -v && cd -
-      # Cognito
+      # Layers
       - cd ${LAYERS}
-      - SLS_DEBUG=1 serverless deploy --package -v && cd -
+      - echo `pwd`
+      - SLS_DEBUG=1 serverless deploy --package target -v && cd -
     finally:
       - echo Deploy finished
