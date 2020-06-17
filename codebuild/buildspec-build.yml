@@ -81,7 +81,7 @@ artifacts:
 
 cache:
   paths:
-    - **/*
+    - node_modules/**/*
     - ${RESOURCE_DB}/node_modules
     - ${RESOURCE_COGNITO}/node_modules
     - ${LAYERS}/**/*
