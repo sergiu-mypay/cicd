@@ -18,7 +18,7 @@ phases:
       nodejs: 12
     commands:
       - echo Time `date`
-      - npm install -g serverless@1.61.2
+      - npm install serverless@1.61.2
       - echo Time `date`
       - cd ${RESOURCE_DB} && npm ci && cd -
       - cd ${RESOURCE_COGNITO} && npm ci && cd -
@@ -46,21 +46,21 @@ phases:
       - echo Time `date`
       # DB
       - echo `pwd`
-      - cd ${RESOURCE_DB} && serverless package --package target/test && cd -
+      - cd ${RESOURCE_DB} && /node_modules/serverless package --package target/test && cd -
       - echo Time `date`
       # Cognito
       - echo `pwd`
-      - cd ${RESOURCE_COGNITO} && serverless package --package target/test && cd -
+      - cd ${RESOURCE_COGNITO} && /node_modules/serverless package --package target/test && cd -
       - echo Time `date`
       # Gateway
       - echo Time `date`
       - echo `pwd`
-      - cd ${RESOURCE_GATEWAY} && serverless package --package  target/test && cd -
+      - cd ${RESOURCE_GATEWAY} && /node_modules/serverless package --package  target/test && cd -
 
       # Layers
       - echo Time `date`
       - echo `pwd`
-      - cd ${LAYERS} && serverless deploy && cd -
+      - cd ${LAYERS} && /node_modules/serverless deploy && cd -
 
       - echo Time `date`
 
@@ -91,9 +91,9 @@ artifacts:
   - codebuild/buildspec-deploy-resources.yml
   - backend/resources/stack-outputs/*
 
-# cache:
-#   paths:
+cache:
+  paths:
     # - /usr/local/lib/node_modules/serverless/**/*
-    # - node_modules/**/*
-    # - ${RESOURCE_DB}/node_modules
-    # - ${RESOURCE_COGNITO}/node_modules
+    - node_modules/**/*
+    - ${RESOURCE_DB}/node_modules
+    - ${RESOURCE_COGNITO}/node_modules
