@@ -71,8 +71,8 @@ artifacts:
   - ${GATEWAY}/target/**/*
   - ${GATEWAY}/serverless.yml
   # Layers
-  - ${LAYERS}/**/*
   - ${LAYERS}/.serverless/**/*
+  - ${LAYERS}/node_modules/**/*
   - ${LAYERS}/serverless.yml
   # Common
   - serverless.common.yml
