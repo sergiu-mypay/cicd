@@ -27,7 +27,7 @@ phases:
     commands:
       # Add tests and lint
       # DB
-      - cd - && cd ${RESOURCE_DB} && mkdir -p target/test && serverless package --package target/test
+      - cd ${RESOURCE_DB} && mkdir -p target/test && serverless package --package target/test
       # - mkdir -p target/test
       # - serverless package --package target/test
       # - cd ../../../
