@@ -77,7 +77,7 @@ phases:
   post_build:
     commands:
       - echo Executing migrations
-      - cd ${SERVICE_MIGRATIONS} && serverless migrations-up
+      - cd ${SERVICE_MIGRATIONS} && serverless migrations-up && cd -
       - echo Migrations executed on `date`
 
     finally:
