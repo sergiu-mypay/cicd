@@ -18,11 +18,11 @@ phases:
       nodejs: 12
     commands:
       - npm install -g serverless@1.61.2
-      - cd ${RESOURCE_DB} && npm ci && cd -
-      - cd ${RESOURCE_COGNITO} && npm ci && cd -
-      - cd ${LAYERS} && npm ci && cd -
-      - cd ${LAYERS}/helper_lib && npm ci && cd -
-      - cd ${LAYERS}/users_lib && npm ci && cd -
+      - cd ${RESOURCE_DB} && npm install && cd -
+      - cd ${RESOURCE_COGNITO} && npm install && cd -
+      - cd ${LAYERS} && npm install && cd -
+      - cd ${LAYERS}/helper_lib && npm install && cd -
+      - cd ${LAYERS}/users_lib && npm install && cd -
     finally:
       - echo Installation finished
   pre_build:
@@ -83,6 +83,7 @@ artifacts:
 
 cache:
   paths:
+    - /usr/local/lib/node_modules/**/*
     - node_modules/**/*
     - ${RESOURCE_DB}/node_modules
     - ${RESOURCE_COGNITO}/node_modules
