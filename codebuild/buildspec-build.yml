@@ -23,9 +23,15 @@ phases:
       - cd ${LAYERS} && npm ci && cd -
     finally:
       - echo Installation finished
+  pre_build:
+    commands:
+      // Compile layers
+      - cd ${LAYERS}/helper_lib && npm run compile
+      - cd ../users_lib && npm run compile
+      - cd ../../../
   build:
     commands:
-      # Add tests and lint
+      # TODO Add tests and lint
       - mkdir -p ${RESOURCE_DB}/target/test
       - mkdir -p ${RESOURCE_COGNITO}/target/test
       - mkdir -p ${RESOURCE_GATEWAY}/target/test
