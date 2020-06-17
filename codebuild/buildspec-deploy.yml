@@ -1,0 +1,35 @@
+version: 0.2
+
+env:
+  variables:
+    RESOURCE_DB: "backend/resources/database"
+    RESOURCE_COGNITO: "backend/resources/cognito"
+    RESOURCE_GATEWAY: "backend/resources/cognito"
+
+    LAYERS: "backend/layers"
+
+    SERVICE_AUTH: "backend/services/auth"
+    SERVICE_USERS: "backend/services/users"
+    SERVICE_CUSTOMERS: "backend/services/customers"
+
+phases:
+  build:
+    commands:
+      # DB
+      - cd ${RESOURCE_DB}
+      - serverless deploy --package target/dev -v
+      - cd -
+      # Cognito
+      - cd ${RESOURCE_COGNITO}
+      - serverless deploy --package target/dev -v
+      - cd -
+      # Gateway
+      - cd ${RESOURCE_GATEWAY}
+      - serverless deploy --package target/dev -v
+      - cd -
+      # Cognito
+      - cd ${LAYERS}
+      - serverless deploy --package target/dev -v
+      - cd -
+    finally:
+      - echo Deploy finished

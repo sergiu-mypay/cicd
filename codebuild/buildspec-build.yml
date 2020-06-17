@@ -1,0 +1,82 @@
+version: 0.2
+
+env:
+  variables:
+    RESOURCE_DB: "backend/resources/database"
+    RESOURCE_COGNITO: "backend/resources/cognito"
+    RESOURCE_GATEWAY: "backend/resources/cognito"
+
+    LAYERS: "backend/layers"
+
+    SERVICE_AUTH: "backend/services/auth"
+    SERVICE_USERS: "backend/services/users"
+    SERVICE_CUSTOMERS: "backend/services/customers"
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 12
+    commands:
+      - npm install -g serverless
+      - cd ${RESOURCE_DB} && npm ci && cd -
+      - cd ${RESOURCE_COGNITO} && npm ci && cd -
+      - cd ${RESOURCE_GATEWAY} && npm ci && cd -
+      - cd ${LAYERS} && npm ci && cd -
+    finally:
+      - echo Installation finished
+  build:
+    commands:
+      # Add tests and lint
+      # DB
+      - cd ${RESOURCE_DB}
+      - mkdir -p target/test
+      - serverless package --package target/test
+      - cd -
+      # Cognito
+      - cd ${RESOURCE_COGNITO}
+      - mkdir -p target/test
+      - serverless package --package target/test
+      - cd -
+      # Gateway
+      - cd ${GATEWAY}
+      - mkdir -p target/test
+      - serverless package --package target/test
+      - cd -
+
+      # Layers
+      - cd ${LAYERS}
+      - mkdir -p target
+      - serverless package --package target
+      - cd -
+
+    finally:
+      - echo Packaging finished
+
+artifacts:
+  files:
+  # DB
+  - ${RESOURCE_DB}/target/**/*
+  - ${RESOURCE_DB}/node_modules/**/*
+  - ${RESOURCE_DB}/serverless.yml
+  # Cognito
+  - ${RESOURCE_COGNITO}/target/**/*
+  - ${RESOURCE_COGNITO}/node_modules/**/*
+  - ${RESOURCE_COGNITO}/serverless.yml
+  # Gateway
+  - ${GATEWAY}/target/**/*
+  - ${GATEWAY}/node_modules/**/*
+  - ${GATEWAY}/serverless.yml
+  # Layers
+  - ${LAYERS}/target/**/*
+  - ${LAYERS}/node_modules/**/*
+  - ${LAYERS}/serverless.yml
+  # Common
+  - serverless.common.yml
+  - codebuild/buildspec-deploy.yml
+  - backend/resources/stack-outputs/*
+
+cache:
+  paths:
+    - ${RESOURCE_DB}/node_modules
+    - ${RESOURCE_COGNITO}/node_modules
+    - ${GATEWAY}/node_modules

@@ -13,6 +13,7 @@
     "aws-sdk": "^2.695.0",
     "babel-jest": "^26.0.1",
     "jest": "^26.0.1",
+    "serverless-aws-alias": "^1.8.0",
     "serverless-layers": "^2.2.4",
     "serverless-plugin-custom-roles": "^1.1.1",
     "serverless-stack-output": "^0.2.3"

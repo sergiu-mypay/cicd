@@ -3,8 +3,9 @@ service: mypay-auth
 plugins:
   - serverless-offline
   - serverless-bundle
-  - serverless-plugin-custom-roles
+  # - serverless-plugin-custom-roles
   - serverless-stack-output
+  - serverless-aws-alias
 
 provider:
   name: aws
@@ -17,11 +18,20 @@ provider:
     DB_RESOURCE_ARN: ${file(../../resources/stack-outputs/database-${self:custom.stage}.yml):DbClusterArn}
     SECRET_ARN: ${file(../../resources/stack-outputs/database-${self:custom.stage}.yml):SecretManagerArn}
 
-# package:
-#   exclude:
-#     - ../../layers/helper_lib/src/response.helper
-#     - ../../layers/users_lib/src/user
-#     - ../../layers/helper_lib/src/mysql-db
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - rds-data:ExecuteStatement
+        - rds-data:BatchExecuteStatement
+        - rds-data:BeginTransaction
+        - rds-data:CommitTransaction
+        - rds-data:RollbackTransaction
+      Resource: '*'
+    - Effect: Allow
+      Action:
+        - secretsmanager:GetSecretValue
+      Resource:
+        'Fn::ImportValue': ${self:custom.stage}-SecretManagerArn
   
 custom:
   defaultStage: ${file(../../../serverless.common.yml):custom.defaultStage}
@@ -50,20 +60,6 @@ custom:
 functions:
   ServiceAuthSignup:
     handler: functions/signup-handler.signUp
-    iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - rds-data:ExecuteStatement
-        - rds-data:BatchExecuteStatement
-        - rds-data:BeginTransaction
-        - rds-data:CommitTransaction
-        - rds-data:RollbackTransaction
-      Resource: '*'
-    - Effect: Allow
-      Action:
-        - secretsmanager:GetSecretValue
-      Resource:
-        'Fn::ImportValue': ${self:custom.stage}-SecretManagerArn
     events:
     - http:
         path: ${self:custom.authEntityPath}/signup

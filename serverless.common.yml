@@ -9,20 +9,3 @@ custom:
   resourcesStage: ${self:custom.resourcesStages.${self:custom.stage}, self:custom.resourcesStages.dev}
 
   baseApiPath: api/v1
-
-
-  stages:
-    prod:
-      - serverless-bundle
-      - serverless-plugin-custom-roles
-    dev:
-      - serverless-offline
-      - serverless-plugin-custom-roles
-    qa:
-      - serverless-bundle
-      - serverless-plugin-custom-roles
-    uat:
-      - serverless-bundle
-      - serverless-plugin-custom-roles
-
-  plugin: ${self:custom.stages.${self:custom.stage}, self:custom.stages.dev}

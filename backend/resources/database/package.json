@@ -6,6 +6,7 @@
   "author": "",
   "license": "",
   "devDependencies": {
+    "serverless-aws-alias": "^1.8.0",
     "serverless-stack-output": "^0.2.3"
   },
   "dependencies": {}
