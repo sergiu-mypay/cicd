@@ -18,9 +18,9 @@ phases:
       nodejs: 12
     commands:
       - npm install -g serverless
-      - cd ${RESOURCE_DB} && npm ci && cd
-      - cd ${RESOURCE_COGNITO} && npm ci && cd
-      - cd ${LAYERS} && npm ci && cd
+      - cd ${RESOURCE_DB} && npm ci && cd ../../../
+      - cd ${RESOURCE_COGNITO} && npm ci && cd ../../../
+      - cd ${LAYERS} && npm ci && cd ../../
     finally:
       - echo Installation finished
   build:
@@ -30,23 +30,23 @@ phases:
       - cd ${RESOURCE_DB}
       - mkdir -p target/test
       - serverless package --package target/test
-      - cd
+      - cd ../../../
       # Cognito
       - cd ${RESOURCE_COGNITO}
       - mkdir -p target/test
       - serverless package --package target/test
-      - cd
+      - cd ../../../
       # Gateway
       - cd ${GATEWAY}
       - mkdir -p target/test
       - serverless package --package target/test
-      - cd
+      - cd ../../../
 
       # Layers
       - cd ${LAYERS}
       - mkdir -p target
       - serverless package --package target
-      - cd
+      - cd ../../
 
     finally:
       - echo Packaging finished
