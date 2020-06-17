@@ -2,15 +2,15 @@ version: 0.2
 
 env:
   variables:
-    RESOURCE_DB: "~/backend/resources/database"
-    RESOURCE_COGNITO: "~/backend/resources/cognito"
-    RESOURCE_GATEWAY: "~/backend/resources/gateway"
+    RESOURCE_DB: "/backend/resources/database"
+    RESOURCE_COGNITO: "/backend/resources/cognito"
+    RESOURCE_GATEWAY: "/backend/resources/gateway"
 
-    LAYERS: "~/backend/layers"
+    LAYERS: "/backend/layers"
 
-    SERVICE_AUTH: "~/backend/services/auth"
-    SERVICE_USERS: "~/backend/services/users"
-    SERVICE_CUSTOMERS: "~/backend/services/customers"
+    SERVICE_AUTH: "/backend/services/auth"
+    SERVICE_USERS: "/backend/services/users"
+    SERVICE_CUSTOMERS: "/backend/services/customers"
 
 phases:
   install:
@@ -31,11 +31,13 @@ phases:
       - mkdir -p ${GATEWAY}/target/test
       - mkdir -p ${LAYERS}/target
       # DB
+      - echo pwd
       - cd ${RESOURCE_DB} && serverless package --package target/test
       # - mkdir -p target/test
       # - serverless package --package target/test
       # - cd ../../../
       # Cognito
+      - echo pwd
       - cd ${RESOURCE_COGNITO} && serverless package --package target/test
       # - cd ${RESOURCE_COGNITO}
       # - mkdir -p target/test
