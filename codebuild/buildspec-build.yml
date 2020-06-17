@@ -25,9 +25,11 @@ phases:
       - echo Installation finished
   pre_build:
     commands:
-      // Compile layers
-      - cd ${LAYERS}/helper_lib && npm run compile
-      - cd ../users_lib && npm run compile
+       #Compile layers
+      - cd ${LAYERS}
+      - cd helper_lib && npm run compile
+      - cd ../
+      - cd users_lib && npm run compile
       - cd ../../../
   build:
     commands:
