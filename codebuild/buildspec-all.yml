@@ -73,7 +73,7 @@ phases:
       # Users
       - cd ${SERVICE_USERS} && serverless deploy --alias=${ALIAS} && cd -
       # Migrations
-      - cd ${SERVICE_MIGRATIONS} && serverless deploy --alias=${ALIAS} && cd -
+      # - cd ${SERVICE_MIGRATIONS} && serverless deploy --alias=${ALIAS} && cd -
   post_build:
     commands:
       - echo Executing migrations
@@ -110,5 +110,9 @@ phases:
 cache:
   paths:
     - node_modules/**/*
-    - ${RESOURCE_DB}/node_modules
-    - ${RESOURCE_COGNITO}/node_modules
+    - ${RESOURCE_DB}/node_modules/**/*
+    - ${RESOURCE_COGNITO}/node_modules/**/*
+    - ${LAYERS}/**/*
+    - ${SERVICE_USERS}/node_modules/**/*
+    - ${SERVICE_CUSTOMERS}/node_modules/**/*
+    - ${SERVICE_AUTH}/node_modules/**/*
