@@ -85,7 +85,11 @@ jobs:
         working-directory: backend/layers
       - name: Install helper_lib packages
         run: |
-          npm install && npm run_script compile
+          npm install
+        working-directory: backend/layers/helper_lib
+      - name: Compile helper_lib
+        run: |
+          npm run_script compile
         working-directory: backend/layers/helper_lib
       - name: Serverless package
         run: |
