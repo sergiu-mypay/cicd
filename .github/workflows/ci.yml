@@ -29,9 +29,9 @@ jobs:
         working-directory: backend/resources/database
       - name: Serverless package
         uses: serverless/github-action@master
+        working-directory: backend/resources/database
         with:
           args: package
-        working-directory: backend/resources/database
   CognitoResourceJob:
     runs-on: ubuntu-latest
     strategy:
