@@ -12,8 +12,27 @@ on:
       - development
       - dev/workflow
 jobs:
-  CommonJob:
+  # CommonJob:
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       node-version: [12.x]
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Use Node.js ${{ matrix.node-version }}
+  #       uses: actions/setup-node@v1
+  #       with:
+  #         node-version: ${{ matrix.node-version }}
+  #     - name: Install main packages
+  #       run: |
+  #         npm install
+  #       working-directory: backend
+  AuthServiceJob:
+    # needs: CommonJob
     runs-on: ubuntu-latest
+    # defaults:
+    #   run:
+    #     working-directory: backend/services/auth
     strategy:
       matrix:
         node-version: [12.x]
@@ -27,38 +46,24 @@ jobs:
         run: |
           npm install
         working-directory: backend
-  AuthServiceJob:
-    needs: CommonJob
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: backend/services/auth
-    strategy:
-      matrix:
-        node-version: [12.x]
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
       - name: Install packages
         run: |
           npm install
+        working-directory: backend/services/auth
         # working-directory: backend/services/auth
       # - name: CD into
       #   run: |
       #     cd backend/services/auth
         # working-directory: backend/services/auth
-      - name: Serverless package
-        uses: serverless/github-action@master
-        with:
-          args: package
+      # - name: Serverless package
+      #   uses: serverless/github-action@master
+      #   with:
+      #     args: package
       # - name: Serverless package
       #   run: |
       #     serverless package
       #   working-directory: backend/services/auth
-      # - name: Serverless package
-      #   run: |
-      #     npx serverless package
-      #   working-directory: backend/services/auth
+      - name: Serverless package
+        run: |
+          npx serverless package
+        working-directory: backend/services/auth
