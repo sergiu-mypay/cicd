@@ -1,7 +1,7 @@
 service: mypay-auth
 
 plugins:
-  - serverless-offline
+  # - serverless-offline
   - serverless-bundle
   - serverless-stack-output
   - serverless-aws-alias
