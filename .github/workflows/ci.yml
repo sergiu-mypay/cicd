@@ -27,13 +27,13 @@ jobs:
         run: |
           npm install
         working-directory: backend/resources/database
-      - name: Serverless
-        uses: serverless/github-action@master
-        # with:
-        #   args: package
+      # - name: Serverless
+      #   uses: serverless/github-action@master
+      #   # with:
+      #   #   args: package
       - name: Serverless package
         run: |
-          npx serverless package
+          npx serverless packagertyrty
         working-directory: backend/resources/database
   CognitoResourceJob:
     runs-on: ubuntu-latest
