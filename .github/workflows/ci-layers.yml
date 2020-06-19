@@ -1,0 +1,41 @@
+name: Layers
+
+on:
+  pull_request:
+    branches:
+      - master
+      - development
+      - dev/workflow
+  push:
+    branches:
+      - master
+      - development
+      - dev/workflow
+jobs:
+  LayersJob:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install layer packages
+        run: |
+          npm install
+        working-directory: backend/layers
+      - name: Install helper_lib packages
+        run: |
+          npm install
+        working-directory: backend/layers/helper_lib
+      - name: Compile helper_lib
+        run: |
+          npm run-script compile
+        working-directory: backend/layers/helper_lib
+      - name: Serverless package
+        run: |
+          npx serverless package
+        working-directory: backend/layers
