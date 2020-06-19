@@ -16,8 +16,8 @@ layers:
   helperlib:
     path: helper_lib/dist
     description: MyPay helpers
-  userslib:
-    path: users_lib/dist
-    description: User models
+  # userslib:
+  #   path: users_lib/dist
+  #   description: User models
   
 
