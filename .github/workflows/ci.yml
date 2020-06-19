@@ -33,7 +33,7 @@ jobs:
         #   args: package
       - name: Serverless package
         run: |
-          serverless package
+          npx serverless package
         working-directory: backend/resources/database
   CognitoResourceJob:
     runs-on: ubuntu-latest
