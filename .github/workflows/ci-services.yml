@@ -1,0 +1,49 @@
+name: Resources
+
+on:
+  pull_request:
+    branches:
+      - master
+      - development
+      - dev/workflow
+  push:
+    branches:
+      - master
+      - development
+      - dev/workflow
+jobs:
+  CommonJob:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install main packages
+        run: |
+          npm install
+        working-directory: backend
+  AuthServiceJob:
+    needs: CommonJob
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install packages
+        run: |
+          npm install
+        working-directory: backend/services/auth
+      - name: Serverless package
+        run: |
+          npx serverless package
+        working-directory: backend/services/auth
