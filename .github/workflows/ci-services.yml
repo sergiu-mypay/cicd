@@ -1,4 +1,4 @@
-name: Resources
+name: Services
 
 on:
   pull_request:
