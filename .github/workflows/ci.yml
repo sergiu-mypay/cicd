@@ -89,7 +89,7 @@ jobs:
         working-directory: backend/layers/helper_lib
       - name: Compile helper_lib
         run: |
-          npm run_script compile
+          npm run-script compile
         working-directory: backend/layers/helper_lib
       - name: Serverless package
         run: |
