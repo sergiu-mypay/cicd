@@ -12,7 +12,7 @@ on:
       - development
       - dev/workflow
 jobs:
-  DBResourceJob:
+  AllResourcesJob:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -23,45 +23,26 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Install packages
+      ###Database
+      - name: Install DB packages
         run: |
           npm install
         working-directory: backend/resources/database
-      - name: Serverless package
+      - name: Serverless DB package
         run: |
           npx serverless package
         working-directory: backend/resources/database
-  CognitoResourceJob:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [12.x]
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Install packages
+      ###Cognito
+      - name: Install Cognito packages
         run: |
           npm install
         working-directory: backend/resources/cognito
-      - name: Serverless package
+      - name: Serverless Cognito package
         run: |
           npx serverless package
         working-directory: backend/resources/cognito
-  GatewayResourceJob:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [12.x]
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Serverless package
+      ###Gateway
+      - name: Serverless Gateway package
         run: |
           npx serverless package
         working-directory: backend/resources/gateway

@@ -32,11 +32,50 @@ jobs:
         run: |
           npm install
         working-directory: backend/services/auth
-      - name: Test Auth
-        run: |
-          npm run-script test
-        working-directory: backend/services/auth
+      # - name: Test Auth
+      #   run: |
+      #     npm run-script test
+      #   working-directory: backend/services/auth
       - name: Serverless Auth package
         run: |
           npx serverless package
         working-directory: backend/services/auth
+        ### Users
+      - name: Install Users packages
+        run: |
+          npm install
+        working-directory: backend/services/users
+      # - name: Test Users
+      #   run: |
+      #     npm run-script test
+      #   working-directory: backend/services/users
+      - name: Serverless Users package
+        run: |
+          npx serverless package
+        working-directory: backend/services/users
+        ### Customers
+      - name: Install Customer packages
+        run: |
+          npm install
+        working-directory: backend/services/customers
+      # - name: Test Cusomer
+      #   run: |
+      #     npm run-script test
+      #   working-directory: backend/services/customers
+      - name: Serverless CUstomer package
+        run: |
+          npx serverless package
+        working-directory: backend/services/customers
+        ### Migrations
+      - name: Install Migrations packages
+        run: |
+          npm install
+        working-directory: backend/services/migrations
+      # - name: Test Migrations
+      #   run: |
+      #     npm run-script test
+      #   working-directory: backend/services/migrations
+      - name: Serverless Migrations package
+        run: |
+          npx serverless package
+        working-directory: backend/services/migrations
