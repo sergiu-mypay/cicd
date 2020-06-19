@@ -43,7 +43,13 @@ jobs:
         run: |
           npm install
         working-directory: backend/services/auth
-      - name: Serverless package
+      - name: Serverless
         run: |
-          npx serverless package
-        working-directory: backend/services/auth
+          cd backend/services/auth
+        uses: serverless/github-action@master
+        with:
+          args: package
+      # - name: Serverless package
+      #   run: |
+      #     npx serverless package
+      #   working-directory: backend/services/auth
