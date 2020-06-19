@@ -30,6 +30,9 @@ jobs:
   AuthServiceJob:
     needs: CommonJob
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend/services/auth
     strategy:
       matrix:
         node-version: [12.x]
@@ -42,19 +45,19 @@ jobs:
       - name: Install packages
         run: |
           npm install
-        working-directory: backend/services/auth
-      - name: CD into
-        run: |
-          cd backend/services/auth
         # working-directory: backend/services/auth
-      - name: Serverless install
+      # - name: CD into
+      #   run: |
+      #     cd backend/services/auth
+        # working-directory: backend/services/auth
+      - name: Serverless package
         uses: serverless/github-action@master
         with:
           args: package
-      - name: Serverless package
-        run: |
-          serverless package
-        working-directory: backend/services/auth
+      # - name: Serverless package
+      #   run: |
+      #     serverless package
+      #   working-directory: backend/services/auth
       # - name: Serverless package
       #   run: |
       #     npx serverless package
