@@ -15,6 +15,8 @@ on:
 jobs:
   CheckLayerUpdated:
     runs-on: ubuntu-latest
+    outputs:
+      output1: ${{ steps.updates.outputs.LAYER_HAS_UPDATES }}
     steps:
       - uses: actions/checkout@v1
       - name: checkSourceCommit
@@ -37,8 +39,7 @@ jobs:
         run: |
           echo ${{ steps.updates.outputs.LAYER_HAS_UPDATES }}
 
-      outputs:
-        output1: ${{ steps.updates.outputs.LAYER_HAS_UPDATES }}
+
   LayersJob:
     needs: CheckLayerUpdated
     if: ${{ needs.CheckLayerUpdated.outputs.LAYER_HAS_UPDATES }} == '1'
