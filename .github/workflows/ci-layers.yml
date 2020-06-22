@@ -23,7 +23,14 @@ jobs:
 
       - name: echo
         run: |
-          [[  ${{ steps.filepath.outputs.commitpath }} =~ ^.github/workflows ]] && echo y
+          if ${{ steps.filepath.outputs.commitpath }} =~ ^backend/layers
+            then
+
+          if [[  ${{ steps.filepath.outputs.commitpath }} =~ ^backend/layers ]]; then
+            echo succes
+          else
+            echo not_succes
+          fi
     # runs-on: ubuntu-latest
     # strategy:
     #   matrix:
