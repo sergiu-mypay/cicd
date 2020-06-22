@@ -1,7 +1,4 @@
-UserslibLambdaLayerS3Key: 'serverless/layer-helper/dev/1591995775906-2020-06-12T21:02:55.906Z/userslib.zip'
-UserslibLambdaLayerQualifiedArn: 'arn:aws:lambda:us-east-1:813715908525:layer:userslib:1'
-HelperlibLambdaLayerQualifiedArn: 'arn:aws:lambda:us-east-1:813715908525:layer:helperlib:15'
-HelperlibLambdaLayerHash: 19fc4fd2e1281b812e4714226b0d6c6e1835843c
-HelperlibLambdaLayerS3Key: 'serverless/layer-helper/dev/1591995775906-2020-06-12T21:02:55.906Z/helperlib.zip'
-UserslibLambdaLayerHash: f648648c36e597cc65bcc35957eb00b6763314c2
+HelperlibLambdaLayerQualifiedArn: 'arn:aws:lambda:us-east-1:813715908525:layer:helperlib:80'
+HelperlibLambdaLayerHash: 117cbbd8713d74a9daa2a048d3f59dcf6622c773
+HelperlibLambdaLayerS3Key: 'serverless/layer-helper/dev/1592852923353-2020-06-22T19:08:43.353Z/helperlib.zip'
 ServerlessDeploymentBucketName: layer-helper-dev-serverlessdeploymentbucket-1cdgsttm04q7r
