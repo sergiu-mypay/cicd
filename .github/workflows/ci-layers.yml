@@ -38,42 +38,30 @@ jobs:
           echo ${{ steps.updates.outputs.LAYER_HAS_UPDATES }}
   LayersJob:
     needs: CheckLayerUpdated
-    if: ${{needs.CheckLayerUpdated.outputs.output1 == '1'}} 
+    if: ${{needs.CheckLayerUpdated.outputs.output1 == '1'}}
     runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [12.x]
     steps:
-      - run: echo ${{needs.CheckLayerUpdated.outputs.output1}}
       - uses: actions/checkout@v2
-        if: ${{needs.CheckLayerUpdated.outputs.output1 == '1'}}
       - name: Use Node.js ${{ matrix.node-version }}
-        if: ${{needs.CheckLayerUpdated.outputs.output1 == '1'}}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: test
-        if: ${{needs.CheckLayerUpdated.outputs.output1 == '1'}}
-        # run: echo ${{needs.job1.outputs.output1}} ${{needs.job1.outputs.output2}}
-        run: |
-          echo ${{ needs.CheckLayerUpdated.outputs.output1  }}
       - name: Install layer packages
-        if: ${{needs.CheckLayerUpdated.outputs.output1 == '1'}}
         run: |
           npm install
         working-directory: backend/layers
       - name: Install helper_lib packages
-        if: ${{needs.CheckLayerUpdated.outputs.output1}} == '1'
         run: |
           npm install
         working-directory: backend/layers/helper_lib
       - name: Compile helper_lib
-        if: ${{needs.CheckLayerUpdated.outputs.output1}} == '1'
         run: |
           npm run-script compile
         working-directory: backend/layers/helper_lib
       - name: Serverless package
-        if: ${{needs.CheckLayerUpdated.outputs.output1}} == '1'
         run: |
           npx serverless package -v
         env:
