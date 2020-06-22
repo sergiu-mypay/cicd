@@ -38,7 +38,7 @@ jobs:
           echo ${{ steps.updates.outputs.LAYER_HAS_UPDATES }}
   LayersJob:
     needs: CheckLayerUpdated
-    if: ${{needs.CheckLayerUpdated.outputs.output1}} == '1'
+    # if: ${{needs.CheckLayerUpdated.outputs.output1}} == '1'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -46,13 +46,14 @@ jobs:
     steps:
       - run: echo ${{needs.CheckLayerUpdated.outputs.output1}}
       - uses: actions/checkout@v2
-        if: ${{ needs.CheckLayerUpdated.outputs.LAYER_HAS_UPDATES }} == '1'
+        if: ${{needs.CheckLayerUpdated.outputs.output1}} == '1'
       - name: Use Node.js ${{ matrix.node-version }}
-        if: ${{ needs.CheckLayerUpdated.outputs.LAYER_HAS_UPDATES }} == '1'
+        if: ${{needs.CheckLayerUpdated.outputs.output1}} == '1'
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
       - name: test
+        if: ${{needs.CheckLayerUpdated.outputs.output1}} == '1'
         # run: echo ${{needs.job1.outputs.output1}} ${{needs.job1.outputs.output2}}
         run: |
           echo ${{ needs.CheckLayerUpdated.outputs.output1  }}
