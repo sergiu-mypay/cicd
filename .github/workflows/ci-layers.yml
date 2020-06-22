@@ -29,12 +29,13 @@ jobs:
             echo item: $i
             if [[ $i =~ ^backend/layers ]]; then
               echo ::set-output name=LAYER_HAS_UPDATES::true
+              break
             fi
           done
 
-      # - name: echoResult
-      #   run: |
-      #     echo ${{ steps.updates.outputs.LAYER_HAS_UPDATES }}
+      - name: echoResult
+        run: |
+          echo ${{ steps.updates.outputs.LAYER_HAS_UPDATES }}
   # LayersJob:
   #   if: ${{ $LAYER_HAS_UPDATES }}
   #   runs-on: ubuntu-latest
