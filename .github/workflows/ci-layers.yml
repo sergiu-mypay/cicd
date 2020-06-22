@@ -35,7 +35,7 @@ jobs:
 
       - name: echoResult
         run: |
-          echo ${{ LAYER_HAS_UPDATES }}
+          echo env.LAYER_HAS_UPDATES
   # LayersJob:
   #   if: ${{ $LAYER_HAS_UPDATES }}
   #   runs-on: ubuntu-latest
