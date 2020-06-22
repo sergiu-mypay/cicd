@@ -40,7 +40,7 @@ jobs:
           echo ${{ steps.updates.outputs.LAYER_HAS_UPDATES }}
   LayersJob:
     needs: CheckLayerUpdated
-    (${{ needs.CheckLayerUpdated.outputs.LAYER_HAS_UPDATES}} == '56')
+    # if: ${{ needs.CheckLayerUpdated.outputs.LAYER_HAS_UPDATES }} == '56'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -53,26 +53,29 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Install layer packages
-        if: ${{ needs.CheckLayerUpdated.outputs.LAYER_HAS_UPDATES }} == '1'
+      - name: test
         run: |
-          npm install
-        working-directory: backend/layers
-      - name: Install helper_lib packages
-        if: ${{ needs.CheckLayerUpdated.outputs.LAYER_HAS_UPDATES }} == '1'
-        run: |
-          npm install
-        working-directory: backend/layers/helper_lib
-      - name: Compile helper_lib
-        if: ${{ needs.CheckLayerUpdated.outputs.LAYER_HAS_UPDATES }} == '1'
-        run: |
-          npm run-script compile
-        working-directory: backend/layers/helper_lib
-      - name: Serverless package
-        if: ${{ needs.CheckLayerUpdated.outputs.LAYER_HAS_UPDATES }} == '1'
-        run: |
-          npx serverless package -v
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        working-directory: backend/layers
+          echo ${{ needs.CheckLayerUpdated.outputs.LAYER_HAS_UPDATES  }}
+      # - name: Install layer packages
+      #   if: ${{ needs.CheckLayerUpdated.outputs.LAYER_HAS_UPDATES }} == '1'
+      #   run: |
+      #     npm install
+      #   working-directory: backend/layers
+      # - name: Install helper_lib packages
+      #   if: ${{ needs.CheckLayerUpdated.outputs.LAYER_HAS_UPDATES }} == '1'
+      #   run: |
+      #     npm install
+      #   working-directory: backend/layers/helper_lib
+      # - name: Compile helper_lib
+      #   if: ${{ needs.CheckLayerUpdated.outputs.LAYER_HAS_UPDATES }} == '1'
+      #   run: |
+      #     npm run-script compile
+      #   working-directory: backend/layers/helper_lib
+      # - name: Serverless package
+      #   if: ${{ needs.CheckLayerUpdated.outputs.LAYER_HAS_UPDATES }} == '1'
+      #   run: |
+      #     npx serverless package -v
+      #   env:
+      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #   working-directory: backend/layers
