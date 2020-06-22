@@ -41,6 +41,8 @@ jobs:
   LayersJob:
     needs: CheckLayerUpdated
     runs-on: ubuntu-latest
+    echo  ${{ needs.CheckLayerUpdated.outputs.LAYER_HAS_UPDATES }}
+    if: needs.CheckLayerUpdated.outputs.LAYER_HAS_UPDATES == '1'
     strategy:
       matrix:
         node-version: [12.x]
