@@ -23,7 +23,6 @@ jobs:
         id: filepath
         run: |
           echo ::set-output name=commitpath::$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }})
-
       - name: checkForLayer
         id: updates
         run: |
@@ -34,7 +33,6 @@ jobs:
               break
             fi
           done
-
       - name: echoResult
         run: |
           echo ${{ steps.updates.outputs.LAYER_HAS_UPDATES }}
@@ -46,6 +44,7 @@ jobs:
       matrix:
         node-version: [12.x]
     steps:
+      - run: echo ${{needs.CheckLayerUpdated.outputs.output1}}
       - uses: actions/checkout@v2
         if: ${{ needs.CheckLayerUpdated.outputs.LAYER_HAS_UPDATES }} == '1'
       - name: Use Node.js ${{ matrix.node-version }}
