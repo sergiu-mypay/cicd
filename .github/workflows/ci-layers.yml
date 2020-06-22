@@ -35,7 +35,7 @@ jobs:
             fi
           done
   LayersJob:
-    if: ${{ $LAYER_HAS_UPDATES }}
+    if: $LAYER_HAS_UPDATES
     runs-on: ubuntu-latest
     strategy:
       matrix:
