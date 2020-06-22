@@ -23,7 +23,7 @@ jobs:
 
       - name: echo
         run: |
-          echo `grep "backend/layers" ${{ steps.filepath.outputs.commitpath }}` 
+          [[ "1234" =~ ^12 ]] && echo y
     # runs-on: ubuntu-latest
     # strategy:
     #   matrix:
