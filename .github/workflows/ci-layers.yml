@@ -24,7 +24,9 @@ jobs:
       - name: echo
         run: |
           if [[  ${{ steps.filepath.outputs.commitpath }} =~ ^backend/layers ]]; then
-            echo succes
+            echo hello
+          else
+            echo bye
           fi
     # runs-on: ubuntu-latest
     # strategy:
