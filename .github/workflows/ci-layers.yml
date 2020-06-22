@@ -24,6 +24,7 @@ jobs:
       - name: echo
         run: |
           echo ${{ steps.filepath.outputs.commitpath }}
+          echo ${{ steps.filepath.outputs.commitpath }} | grep -q backend/layers 
     # runs-on: ubuntu-latest
     # strategy:
     #   matrix:
