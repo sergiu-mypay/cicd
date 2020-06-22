@@ -12,9 +12,6 @@ on:
       - development
       - dev/workflow
 
-env:
-  LAYER_HAS_UPDATES: false
-
 jobs:
   CheckLayerUpdated:
     runs-on: ubuntu-latest
@@ -26,18 +23,18 @@ jobs:
           echo ::set-output name=commitpath::$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }})
 
       - name: checkForLayer
+        id: updates
         run: |
           for i in ${{ steps.filepath.outputs.commitpath }}; do
             echo item: $i
             if [[ $i =~ ^backend/layers ]]; then
-              echo "::set-env name=LAYER_HAS_UPDATES::true"
-              break
+              echo ::set-output name=LAYER_HAS_UPDATES::true
             fi
           done
 
       - name: echoResult
         run: |
-          echo $LAYER_HAS_UPDATES
+          echo ${{ steps.updates.outputs.LAYER_HAS_UPDATES }}
   # LayersJob:
   #   if: ${{ $LAYER_HAS_UPDATES }}
   #   runs-on: ubuntu-latest
