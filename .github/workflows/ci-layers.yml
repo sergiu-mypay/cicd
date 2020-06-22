@@ -26,7 +26,8 @@ jobs:
           if ${{ steps.filepath.outputs.commitpath }} =~ ^backend/layers
             then
 
-          if [[  ${{ steps.filepath.outputs.commitpath }} =~ ^backend/layers ]]; then
+          if [ ${{ steps.filepath.outputs.commitpath }} =~ ^backend/layers ]
+          then
             echo succes
           else
             echo not_succes
