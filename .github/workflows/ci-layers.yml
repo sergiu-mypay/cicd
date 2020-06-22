@@ -64,7 +64,21 @@ jobs:
       - name: Serverless package
         run: |
           npx serverless deploy -v
+          yes| cp -rf layers-outputs.yml ./backend/layers/
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         working-directory: backend/layers
+
+      - name: Commit files # commit the output folder
+        run: |
+          git config --local user.email "test@github.com"
+          git config --local user.name "GitHub Action test"
+          git add ./backend/layers/layers-outputs.yml
+          git commit -m "Add changes"
+      - name: Push changes # push the output folder to your repo
+        uses: ad-m/github-push-action@master
+        with:
+          branch: development #ignore if your branch is master
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          force: true
