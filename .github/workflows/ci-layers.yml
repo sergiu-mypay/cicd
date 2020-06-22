@@ -16,7 +16,7 @@ jobs:
   CheckLayerUpdated:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v1
       - name: checkSourceCommit
         id: filepath
         run: |
@@ -32,9 +32,9 @@ jobs:
             fi
           done
 
-      - name: echoResult
-        run: |
-          echo ${{ steps.updates.outputs.LAYER_HAS_UPDATES }}
+      # - name: echoResult
+      #   run: |
+      #     echo ${{ steps.updates.outputs.LAYER_HAS_UPDATES }}
   # LayersJob:
   #   if: ${{ $LAYER_HAS_UPDATES }}
   #   runs-on: ubuntu-latest
