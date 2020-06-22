@@ -23,7 +23,7 @@ jobs:
 
       - name: echo
         run: |
-          [[  ${{ steps.filepath.outputs.commitpath }} =~ ^backend/layers ]] && echo y
+          [[  ${{ steps.filepath.outputs.commitpath }} =~ ^.github/workflows ]] && echo y
     # runs-on: ubuntu-latest
     # strategy:
     #   matrix:
