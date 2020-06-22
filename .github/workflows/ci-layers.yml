@@ -23,12 +23,10 @@ jobs:
 
       - name: echo
         run: |
-          echo  ${{ steps.filepath.outputs.commitpath }}
-          if [[  ${{ steps.filepath.outputs.commitpath }} =~ ^backend/layers ]]; then
-            echo hello
-          else
-            echo bye
-          fi
+          for i in ${{ steps.filepath.outputs.commitpath }}; do
+            echo item: $i
+          done
+        
     # runs-on: ubuntu-latest
     # strategy:
     #   matrix:
