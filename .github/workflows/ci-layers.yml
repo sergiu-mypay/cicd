@@ -23,7 +23,10 @@ jobs:
 
       - name: echo
         run: |
-          echo ${{ steps.filepath.outputs.commitpath }} ${{ steps.filepath.outputs.commitpath }} | grep -q backend/layers
+          if ${{ steps.filepath.outputs.commitpath }}{
+            echo "Changes"
+          }
+          
     # runs-on: ubuntu-latest
     # strategy:
     #   matrix:
