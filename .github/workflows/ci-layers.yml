@@ -38,8 +38,6 @@ jobs:
       - name: echoResult
         run: |
           echo ${{ steps.updates.outputs.LAYER_HAS_UPDATES }}
-
-
   LayersJob:
     needs: CheckLayerUpdated
     if: ${{ needs.CheckLayerUpdated.outputs.LAYER_HAS_UPDATES }} == '1'
