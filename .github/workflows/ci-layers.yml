@@ -28,14 +28,14 @@ jobs:
           for i in ${{ steps.filepath.outputs.commitpath }}; do
             echo item: $i
             if [[ $i =~ ^backend/layers ]]; then
-              echo ::set-output name=LAYER_HAS_UPDATES::true
+              echo ::set-env name=LAYER_HAS_UPDATES::true
               break
             fi
           done
 
       - name: echoResult
         run: |
-          echo ${{ steps.updates.outputs.LAYER_HAS_UPDATES }}
+          echo ${{ LAYER_HAS_UPDATES }}
   # LayersJob:
   #   if: ${{ $LAYER_HAS_UPDATES }}
   #   runs-on: ubuntu-latest
