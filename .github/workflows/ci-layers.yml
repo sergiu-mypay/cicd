@@ -13,7 +13,6 @@ on:
       - dev/workflow
 jobs:
   LayersJob:
-    packagecheck:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
