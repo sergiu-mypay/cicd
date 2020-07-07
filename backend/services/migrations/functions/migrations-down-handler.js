@@ -2,7 +2,7 @@
 
 const { umzug } = require('../libs/umzug-migrations');
 
-export const migrationsDown = async() => {
+module.exports.migrationsDown = async() => {
   const migrations = await umzug.down();
   const executed = migrations.map(migr => migr.file);
 

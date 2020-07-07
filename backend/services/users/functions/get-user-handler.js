@@ -1,21 +1,14 @@
-var response = process.env.IS_OFFLINE ? require('../../../layers/helper_lib/src/response.helper').response : require('mypay-helpers').response;
-var UserModel = process.env.IS_OFFLINE ? require('../../../layers/users_lib/src/user').UserModel : require('users-helpers').UserModel;
-var sequelize = process.env.IS_OFFLINE ? require('../../../layers/helper_lib/src/mysql-db').sequelize : require('mypay-helpers').sequelize;
-var Sequelize = process.env.IS_OFFLINE ? require('../../../layers/helper_lib/src/mysql-db').Sequelize : require('mypay-helpers').Sequelize;
+'use strict';
+require('dotenv').config();
+global.fetch = require('node-fetch').default;
 
-const database = process.env.STAGE + '_database';
-// Arn of Aurora serverless cluster cluster
-const host = process.env.DB_RESOURCE_ARN;
-
-// This param is ignored by the wrapper.
-const username = '';
-
-// Arn of secrets manager secret containing the rds credentials
-const password = process.env.SECRET_ARN;
-
-const User = UserModel(sequelize(host, database, username, password), Sequelize);
+var {response} = process.env.IS_OFFLINE ? require('../../../layers/helper_lib/src') : require('mypay-helpers');
+var {connectDB} = process.env.IS_OFFLINE ? require('../../../layers/models_lib/src') : require('models');
+const db = connectDB(process.env.DB_RESOURCE_ARN, process.env.STAGE + '_database', '', process.env.SECRET_ARN, process.env.IS_OFFLINE);
 
 export const getUser = async (event) => {
+
+    const { User } = db;
 
     const propeprty = event.pathParameters.property;
     const value = event.pathParameters.value;

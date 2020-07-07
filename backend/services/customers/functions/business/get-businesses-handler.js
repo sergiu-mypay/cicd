@@ -1,21 +1,29 @@
-const axios = require('axios').default;
+require('dotenv').config();
 
-var response = process.env.IS_OFFLINE ? require('../../../layers/helper_lib/src/response.helper').response : require('mypay-helpers').response;
+var {response} = process.env.IS_OFFLINE ? require('../../../../layers/helper_lib/src') : require('mypay-helpers');
+var {connectDB} = process.env.IS_OFFLINE ? require('../../../../layers/models_lib/src') : require('models');
+const db = connectDB(process.env.DB_RESOURCE_ARN, process.env.STAGE + '_database', '', process.env.SECRET_ARN, process.env.IS_OFFLINE);
+
 
 export const getBusinesses = async() => {
   try {
-    //This code for storing some data in NOSql store for my task, while we not created DB.
-    const result = await axios.get('https://my-pay-eae27.firebaseio.com/business.json');
-    const propNames = Object.getOwnPropertyNames(result.data);
-    const businessEntities = propNames.map((name) => ({
-        id: name,
-        type: result.data[name].type,
-        name: result.data[name].name,
-        clients: result.data[name].clients,
-    }));
-    return response(businessEntities);
+    
+    const businesses = await db.Business.findAll({
+      include: [
+        {
+          model: db.Client,
+          include: [
+            {
+              model: db.Merchant
+            }
+          ]
+        }
+      ]
+    });
+
+    return response(businesses, 200);
   } catch (err) {
-    console.log(err);
-    return response(err, 404);
+
+    return response(err, 500);
   }
 };

@@ -1,20 +1,23 @@
 'use strict';
 require('dotenv').config();
-const {CognitoUserPool, CognitoUser, AuthenticationDetails} = require('amazon-cognito-identity-js');
 global.fetch = require('node-fetch').default;
 
-var response = process.env.IS_OFFLINE ? require('../../../layers/helper_lib/src/response.helper').response : require('mypay-helpers').response;
+const {CognitoUserPool, CognitoUser, AuthenticationDetails} = require('amazon-cognito-identity-js');
+var {response} = process.env.IS_OFFLINE ? require('../../../layers/helper_lib/src') : require('mypay-helpers');
+var {connectDB} = process.env.IS_OFFLINE ? require('../../../layers/models_lib/src') : require('models');
+const db = connectDB(process.env.DB_RESOURCE_ARN, process.env.STAGE + '_database', '', process.env.SECRET_ARN, process.env.IS_OFFLINE);
 
 const poolData = {
     UserPoolId: process.env.COGNITO_USER_POOL_ID,
-    ClientId: process.env.COGNITO_CLIENT_ID
+    ClientId: process.env.COGNITO_CLIENT_ID 
 };
-
 const userPool = new CognitoUserPool(poolData);
 
 export const login = async event => {
 
     try {
+
+        const { User } = db;
 
         if (!event.body) {
             const result = response({}, 400);
@@ -32,12 +35,34 @@ export const login = async event => {
             Pool: userPool
         };
 
-        const result = authenticateUser(userData, authenticationDetails);
+        const result = await authenticateUser(userData, authenticationDetails);
+        
+        if(result.statusCode === 201) {
+            const user = await User.findOne({
+                attributes:["email","firstName","lastName", "pictureUrl"],
+                include: {
+                    model: db.UserType,
+                    attributes:["name"],
+                },
+                where: {
+                    email: body.username,
+                }
+            });
+            if(user) {
+                return response({user, token: result.token}, 200);
+            } else {
+                return response({}, 400);
+            }
+        }
+        else {
+            return response(result.error, result.statusCode);
+        }
 
-        return result;
+        
     }
     catch (error) {
-        const result = response({ error: error }, 500);
+        console.error(error);
+        const result = response(null, 500);
         return result;
     }
 };
@@ -49,15 +74,15 @@ const authenticateUser = (userData, authenticationDetails) => {
 
         cognitoUser.authenticateUser(authenticationDetails, {
             onSuccess: function (result) {
-                const successResponse = response(result.getIdToken().getJwtToken() , 201);
+                const successResponse = {token: result.getIdToken().getJwtToken(), statusCode: 201 };
                 resolve(successResponse);
             },
             onFailure: function (err) {
-                const failureResponse = response(err , 400);
+                const failureResponse = {error: err , statusCode: 400};
                 resolve(failureResponse);
             },
             newPasswordRequired: () => {
-                const newPasswordResponse = response({ error: "Password must be changed" }, 400);
+                const newPasswordResponse = { error: "Password must be changed",  statusCode: 400};
                 resolve(newPasswordResponse);
             }
         });

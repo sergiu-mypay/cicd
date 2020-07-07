@@ -1,15 +1,18 @@
 service: mypay-auth
 
 plugins:
-  # - serverless-offline
+  - serverless-offline
   - serverless-bundle
-  - serverless-stack-output
   - serverless-aws-alias
 
 provider:
   name: aws
   runtime: nodejs12.x
   region: us-east-1
+  timeout: 30
+  aliasStage:
+    loggingLevel: 'ERROR'
+    dataTraceEnabled: true
   environment:
     COGNITO_USER_POOL_ID: ${file(../../resources/stack-outputs/cognito-${self:custom.stage}.yml):CognitoUserPoolId}
     COGNITO_CLIENT_ID: ${file(../../resources/stack-outputs/cognito-${self:custom.stage}.yml):CognitoUserPoolClientId}
@@ -17,7 +20,6 @@ provider:
     DB_RESOURCE_ARN: ${file(../../resources/stack-outputs/database-${self:custom.stage}.yml):DbClusterArn}
     SECRET_ARN: ${file(../../resources/stack-outputs/database-${self:custom.stage}.yml):SecretManagerArn}
 
-  
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -32,7 +34,14 @@ provider:
         - secretsmanager:GetSecretValue
       Resource:
         'Fn::ImportValue': ${self:custom.stage}-SecretManagerArn
-  
+    - Effect: Allow
+      Action:
+        - cognito-idp:AdminDeleteUser
+        - cognito-idp:AdminGetUser
+        - cognito-idp:AdminLinkProviderForUser
+      Resource:
+        'Fn::ImportValue': ${self:custom.stage}-CognitoUserPoolArn
+
 custom:
   defaultStage: ${file(../../../serverless.common.yml):custom.defaultStage}
   resourcesStages: ${file(../../../serverless.common.yml):custom.resourcesStages}
@@ -42,19 +51,20 @@ custom:
 
   authEntityPath: ${self:custom.baseApiPath}/auth
 
-  output:
-    file: stack-outputs/auth-${self:provider.alias}.yml
   bundle:
     externals:
       - mypay-helpers
-      - users-helpers
+      - models
     linting: false #Ignore for compilation
     ignorePackages:
       - pg-hstore
       # only on aws
-      - ../../../layers/helper_lib/src/response.helper
-      - ../../../layers/users_lib/src/user
-      - ../../../layers/helper_lib/src/mysql-db
-  
+      - ../../../layers/models_lib/src
+      - ../../../layers/helper_lib/src
+
 functions:
   - ${file(functions.yml)}
+
+resources:
+  # API Gateway Errors
+  - ${file(api-gateway-errors.yml)}

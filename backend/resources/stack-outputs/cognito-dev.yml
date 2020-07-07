@@ -1,0 +1,4 @@
+CognitoUserPoolClientId: 79gtf0alkr1mbif839puvvja5u
+CognitoUserPoolId: us-east-1_z60njAidS
+CognitoUserPoolArn: 'arn:aws:cognito-idp:us-east-1:813715908525:userpool/us-east-1_z60njAidS'
+ServerlessDeploymentBucketName: mypay-cognito-dev-serverlessdeploymentbucket-doew4ls3dh1d

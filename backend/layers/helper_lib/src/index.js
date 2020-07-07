@@ -1,8 +1,10 @@
 import {response} from './response.helper';
-import {sequelize, Sequelize} from './mysql-db';
+import { getUserId } from "./token-decoder";
+
+import * as models from "./models";
 
 export {
     response,
-    sequelize,
-    Sequelize
+    getUserId,
+    models
 };

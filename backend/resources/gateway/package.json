@@ -1,0 +1,12 @@
+{
+  "name": "backend",
+  "version": "",
+  "description": "",
+  "scripts": {},
+  "author": "",
+  "license": "",
+  "devDependencies": {
+    "serverless-stack-output": "^0.2.3"
+  },
+  "dependencies": {}
+}

@@ -2,27 +2,53 @@ Hierarchy:
   handler: functions/get-hierarchy-handler.getHierarchy
   events:
     - http:
-        path: ${self:custom.businessEntityPath}/getHierarchy
+        path: ${self:custom.customersEntityPath}/getHierarchy
         method: get
         cors: true
+        authorizer:
+          arn: ${file(../../resources/stack-outputs/cognito-${self:custom.stage}.yml):CognitoUserPoolArn}
   layers:
     - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+    - ${file(../../layers/layers-outputs.yml):ModelslibLambdaLayerQualifiedArn}
+
+AssignEntityAndRoleToUser:
+  handler: functions/assign-entity-and-role-to-user-handler.assignEntityAndRoleToUser
+  events:
+    - http:
+        path: ${self:custom.customersEntityPath}/assignEntityAndRoleToUser
+        method: post
+        authorizer:
+          arn: ${file(../../resources/stack-outputs/cognito-${self:custom.stage}.yml):CognitoUserPoolArn}
+        cors: true
+        request:
+          parameters:
+            paths:
+              id: true
+  layers:
+    - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+    - ${file(../../layers/layers-outputs.yml):ModelslibLambdaLayerQualifiedArn}
+
 BusinessGet:
   handler: functions/business/get-businesses-handler.getBusinesses
   events:
     - http:
-        path: ${self:custom.businessEntityPath}
+        path: ${self:custom.customersEntityPath}/businesses
         method: get
+        authorizer:
+          arn: ${file(../../resources/stack-outputs/cognito-${self:custom.stage}.yml):CognitoUserPoolArn}
         cors: true
   layers:
     - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+    - ${file(../../layers/layers-outputs.yml):ModelslibLambdaLayerQualifiedArn}
 
 BusinessGetById:
   handler: functions/business/get-business-handler.getBusiness
   events:
     - http:
-        path: ${self:custom.businessEntityPath}/{id}
+        path: ${self:custom.customersEntityPath}/businesses/{businessId}
         method: get
+        authorizer:
+          arn: ${file(../../resources/stack-outputs/cognito-${self:custom.stage}.yml):CognitoUserPoolArn}
         cors: true
         request:
           parameters:
@@ -30,23 +56,29 @@ BusinessGetById:
               id: true
   layers:
     - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+    - ${file(../../layers/layers-outputs.yml):ModelslibLambdaLayerQualifiedArn}
 
 BusinessCreate:
   handler: functions/business/create-business-handler.createBusiness
   events:
     - http:
-        path: ${self:custom.businessEntityPath}
+        path: ${self:custom.customersEntityPath}/businesses
         method: post
+        authorizer:
+          arn: ${file(../../resources/stack-outputs/cognito-${self:custom.stage}.yml):CognitoUserPoolArn}
         cors: true
   layers:
     - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+    - ${file(../../layers/layers-outputs.yml):ModelslibLambdaLayerQualifiedArn}
 
 BusinessUpdate:
   handler: functions/business/update-business-handler.updateBusiness
   events:
     - http:
-        path: ${self:custom.businessEntityPath}/{id}
+        path: ${self:custom.customersEntityPath}/businesses/{businessId}
         method: put
+        authorizer:
+          arn: ${file(../../resources/stack-outputs/cognito-${self:custom.stage}.yml):CognitoUserPoolArn}
         cors: true
         request:
           parameters:
@@ -54,13 +86,16 @@ BusinessUpdate:
               id: true
   layers:
     - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+    - ${file(../../layers/layers-outputs.yml):ModelslibLambdaLayerQualifiedArn}
 
 BusinessDelete:
   handler: functions/business/delete-business-handler.deleteBusiness
   events:
     - http:
-        path: ${self:custom.businessEntityPath}/{id}
+        path: ${self:custom.customersEntityPath}/businesses/{businessId}
         method: delete
+        authorizer:
+          arn: ${file(../../resources/stack-outputs/cognito-${self:custom.stage}.yml):CognitoUserPoolArn}
         cors: true
         request:
           parameters:
@@ -68,3 +103,189 @@ BusinessDelete:
               id: true
   layers:
     - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+    - ${file(../../layers/layers-outputs.yml):ModelslibLambdaLayerQualifiedArn}
+
+ClientGet:
+  handler: functions/client/get-clients-handler.getClients
+  events:
+    - http:
+        path: ${self:custom.customersEntityPath}/businesses/{businessId}/clients
+        method: get
+        authorizer:
+          arn: ${file(../../resources/stack-outputs/cognito-${self:custom.stage}.yml):CognitoUserPoolArn}
+        cors: true
+  layers:
+    - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+    - ${file(../../layers/layers-outputs.yml):ModelslibLambdaLayerQualifiedArn}
+
+ClientGetById:
+  handler: functions/client/get-client-handler.getClient
+  events:
+    - http:
+        path: ${self:custom.customersEntityPath}/businesses/{businessId}/clients/{clientId}
+        method: get
+        authorizer:
+          arn: ${file(../../resources/stack-outputs/cognito-${self:custom.stage}.yml):CognitoUserPoolArn}
+        cors: true
+        request:
+          parameters:
+            paths:
+              businessId: true
+              clientId: true
+  layers:
+    - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+    - ${file(../../layers/layers-outputs.yml):ModelslibLambdaLayerQualifiedArn}
+
+ClientCreate:
+  handler: functions/client/create-client-handler.createClient
+  events:
+    - http:
+        path: ${self:custom.customersEntityPath}/businesses/{businessId}/clients
+        method: post
+        authorizer:
+          arn: ${file(../../resources/stack-outputs/cognito-${self:custom.stage}.yml):CognitoUserPoolArn}
+        cors: true
+        request:
+          parameters:
+            paths:
+              businessId: true
+  layers:
+    - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+    - ${file(../../layers/layers-outputs.yml):ModelslibLambdaLayerQualifiedArn}
+
+ClientUpdate:
+  handler: functions/client/update-client-handler.updateClient
+  events:
+    - http:
+        path: ${self:custom.customersEntityPath}/businesses/{businessId}/clients/{clientId}
+        method: put
+        authorizer:
+          arn: ${file(../../resources/stack-outputs/cognito-${self:custom.stage}.yml):CognitoUserPoolArn}
+        cors: true
+        request:
+          parameters:
+            paths:
+              businessId: true
+              clientId: true
+  layers:
+    - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+    - ${file(../../layers/layers-outputs.yml):ModelslibLambdaLayerQualifiedArn}
+
+ClientDelete:
+  handler: functions/client/delete-client-handler.deleteClient
+  events:
+    - http:
+        path: ${self:custom.customersEntityPath}/businesses/{businessId}/clients/{clientId}
+        method: delete
+        authorizer:
+          arn: ${file(../../resources/stack-outputs/cognito-${self:custom.stage}.yml):CognitoUserPoolArn}
+        cors: true
+        request:
+          parameters:
+            paths:
+              businessId: true
+              clientId: true
+  layers:
+    - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+    - ${file(../../layers/layers-outputs.yml):ModelslibLambdaLayerQualifiedArn}
+
+MerchantGet:
+  handler: functions/merchant/get-merchants-handler.getMerchants
+  events:
+    - http:
+        path: ${self:custom.customersEntityPath}/businesses/{businessId}/clients/{clientId}/merchants
+        method: get
+        authorizer:
+          arn: ${file(../../resources/stack-outputs/cognito-${self:custom.stage}.yml):CognitoUserPoolArn}
+        cors: true
+  layers:
+    - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+    - ${file(../../layers/layers-outputs.yml):ModelslibLambdaLayerQualifiedArn}
+
+MerchantGetById:
+  handler: functions/merchant/get-merchant-handler.getMerchant
+  events:
+    - http:
+        path: ${self:custom.customersEntityPath}/businesses/{businessId}/clients/{clientId}/merchants/{merchantId}
+        method: get
+        authorizer:
+          arn: ${file(../../resources/stack-outputs/cognito-${self:custom.stage}.yml):CognitoUserPoolArn}
+        cors: true
+        request:
+          parameters:
+            paths:
+              businessId: true
+              clientId: true
+              merchantId: true
+  layers:
+    - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+    - ${file(../../layers/layers-outputs.yml):ModelslibLambdaLayerQualifiedArn}
+
+MerchantCreate:
+  handler: functions/merchant/create-merchant-handler.createMerchant
+  events:
+    - http:
+        path: ${self:custom.customersEntityPath}/businesses/{businessId}/clients/{clientId}/merchants
+        method: post
+        authorizer:
+          arn: ${file(../../resources/stack-outputs/cognito-${self:custom.stage}.yml):CognitoUserPoolArn}
+        cors: true
+        request:
+          parameters:
+            paths:
+              businessId: true
+              clientId: true
+  layers:
+    - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+    - ${file(../../layers/layers-outputs.yml):ModelslibLambdaLayerQualifiedArn}
+
+MerchantUpdate:
+  handler: functions/merchant/update-merchant-handler.updateMerchant
+  events:
+    - http:
+        path: ${self:custom.customersEntityPath}/businesses/{businessId}/clients/{clientId}/merchants/{merchantId}
+        method: put
+        authorizer:
+          arn: ${file(../../resources/stack-outputs/cognito-${self:custom.stage}.yml):CognitoUserPoolArn}
+        cors: true
+        request:
+          parameters:
+            paths:
+              businessId: true
+              clientId: true
+              merchantId: true
+  layers:
+    - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+    - ${file(../../layers/layers-outputs.yml):ModelslibLambdaLayerQualifiedArn}
+
+MerchantDelete:
+  handler: functions/merchant/delete-merchant-handler.deleteMerchant
+  events:
+    - http:
+        path: ${self:custom.customersEntityPath}/businesses/{businessId}/clients/{clientId}/merchants/{merchantId}
+        method: delete
+        authorizer:
+          arn: ${file(../../resources/stack-outputs/cognito-${self:custom.stage}.yml):CognitoUserPoolArn}
+        cors: true
+        request:
+          parameters:
+            paths:
+              businessId: true
+              clientId: true
+              merchantId: true
+  layers:
+    - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+    - ${file(../../layers/layers-outputs.yml):ModelslibLambdaLayerQualifiedArn}
+
+RelationshipExists:
+  handler: functions/relationship/exists-relationship-handler.existsRelationship
+  events:
+    - http:
+        path: ${self:custom.customersEntityPath}/relationships/exists
+        method: patch
+        authorizer:
+          arn: ${file(../../resources/stack-outputs/cognito-${self:custom.stage}.yml):CognitoUserPoolArn}
+        cors: true
+  layers:
+    - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+    - ${file(../../layers/layers-outputs.yml):ModelslibLambdaLayerQualifiedArn}

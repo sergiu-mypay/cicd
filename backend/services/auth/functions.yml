@@ -10,7 +10,8 @@ Signup:
           application/json: ${file(validators/signup-validator.json)}
   layers:
     - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
-    - ${file(../../layers/layers-outputs.yml):UserslibLambdaLayerQualifiedArn}
+    - ${file(../../layers/layers-outputs.yml):ModelslibLambdaLayerQualifiedArn}
+
 Login:
   handler: functions/login-handler.login
   events:
@@ -23,6 +24,8 @@ Login:
           application/json: ${file(validators/login-validator.json)}
   layers:
     - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+    - ${file(../../layers/layers-outputs.yml):ModelslibLambdaLayerQualifiedArn}
+
 ChangePassword:
   handler: functions/changePassword-handler.changePassword
   events:
@@ -32,3 +35,32 @@ ChangePassword:
       cors: true
   layers:
     - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+
+SocialMedia:
+  handler: functions/auth-with-social-media-handler.authWithSocialMedia
+  events:
+  - http:
+      path: ${self:custom.authEntityPath}/authWithSocialMedia
+      method: post
+      cors: true
+  layers:
+    - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+    
+AddUserMyPayIdToCognitoToken:
+  handler: functions/addUserMyPayIdToCognitoToken-handler.addUserMyPayIdToCognitoToken
+  layers:
+    - ${file(../../layers/layers-outputs.yml):ModelslibLambdaLayerQualifiedArn}
+
+CompleteInvite:
+  handler: functions/complete-invite-signup-handler.completeInvite
+  events:
+  - http:
+      path: ${self:custom.authEntityPath}/completeInvite
+      method: post
+      cors: true
+      request:
+        schema:
+          application/json: ${file(validators/complete-invite-validator.json)}
+  layers:
+    - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+    - ${file(../../layers/layers-outputs.yml):ModelslibLambdaLayerQualifiedArn}

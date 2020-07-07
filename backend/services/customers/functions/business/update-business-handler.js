@@ -1,14 +1,33 @@
-const axios = require('axios').default;
+'use strict';
+require('dotenv').config();
+global.fetch = require('node-fetch').default;
 
-var response = process.env.IS_OFFLINE ? require('../../../layers/helper_lib/src/response.helper').response : require('mypay-helpers').response;
+var {response} = process.env.IS_OFFLINE ? require('../../../../layers/helper_lib/src') : require('mypay-helpers');
+var {connectDB} = process.env.IS_OFFLINE ? require('../../../../layers/models_lib/src') : require('models');
+const db = connectDB(process.env.DB_RESOURCE_ARN, process.env.STAGE + '_database', '', process.env.SECRET_ARN, process.env.IS_OFFLINE);
 
 export const updateBusiness = async(event) => {
-    const businessId = event.pathParameters.id;
-    const updatetBusiness = JSON.parse(event.body).business;
+    const { Business } = db;
+    const businessId = event.pathParameters.businessId;
+    const updatedBusiness = JSON.parse(event.body).business;
+
     try {
-        const result = await axios.put(`https://my-pay-eae27.firebaseio.com/business/${businessId}.json`, updatetBusiness);
-        return response(result.data);
+        
+        const business = await Business.findByPk(businessId);
+
+        if(business)
+        {
+            await business.update({
+                name: updatedBusiness.name
+            });
+        }
+        else{
+            return response({errorMessage: "Entity not found"}, 404);
+        }
+
+        return response({});
     } catch(err) {
-        return response(err, 404);
+
+        return response(err, 500);
     }
 };

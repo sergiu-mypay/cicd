@@ -1,10 +1,10 @@
 'use strict';
-
 require('dotenv').config();
-import {CognitoUserPool, CognitoUser, AuthenticationDetails} from 'amazon-cognito-identity-js';
 global.fetch = require('node-fetch').default;
 
-var response = process.env.IS_OFFLINE ? require('../../../layers/helper_lib/src/response.helper').response : require('mypay-helpers').response;
+var {response} = process.env.IS_OFFLINE ? require('../../../layers/helper_lib/src') : require('mypay-helpers');
+
+const {CognitoUserPool, CognitoUser, AuthenticationDetails} = require('amazon-cognito-identity-js');
 
 const poolData = {
     UserPoolId: process.env.COGNITO_USER_POOL_ID,
@@ -37,12 +37,12 @@ export const changePassword = (event, context, callback) => {
             cognitoUser.changePassword(body.password, body.newPassword, (err, result) => {
                 if(err)
                 {
-                    const response = response({error: err.message}, 400);
-                    callback(null, response);
+                    const successResponse = response({error: err.message}, 400);
+                    callback(null, successResponse);
                 }
                 else{
-                    const response = response({}, 200);
-                    callback(null, response);
+                    const errorResponse = response({}, 200);
+                    callback(null, errorResponse);
                 }
             });
         },

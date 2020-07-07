@@ -1,11 +1,18 @@
 service: mypay-gateway
 
+plugins:
+  - serverless-stack-output
+
 provider:
   name: aws
   runtime: nodejs12.x
   region: us-east-1
 
-custom: ${file(../../../serverless.common.yml):custom}
+custom:
+  defaultStage: ${file(../../../serverless.common.yml):custom.defaultStage}
+  stage: ${file(../../../serverless.common.yml):custom.stage}
+  output:
+    file: ../stack-outputs/gateway-${self:custom.stage}.yml
 
 resources:
   Resources:
@@ -43,6 +50,29 @@ resources:
         ResponseType: DEFAULT_5XX
         RestApiId:
           Ref: 'ApiGatewayRestApi'
+
+    # An IAM role to allow API Gateway to log requests to CloudWatch.
+    RoleAPIGatewayCloudWatch:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - apigateway.amazonaws.com
+              Action:
+                - sts:AssumeRole
+        ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
+
+    # A custom API Gateway account to allow us to enable request logging.
+    ApiGatewayAccount:
+      Type: AWS::ApiGateway::Account
+      Properties:
+        CloudWatchRoleArn:
+          Fn::GetAtt: [RoleAPIGatewayCloudWatch, Arn]
   Outputs:
     ApiGatewayAuthorizerId:
       Value:

@@ -1,0 +1,72 @@
+service: mypay-users
+
+plugins:
+  - serverless-offline
+  - serverless-bundle
+  - serverless-aws-alias
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+  aliasStage:
+    loggingLevel: "ERROR"
+    dataTraceEnabled: true
+  environment:
+    COGNITO_USER_POOL_ID: ${file(../../resources/stack-outputs/cognito-${self:custom.stage}.yml):CognitoUserPoolId}
+    STAGE: ${self:custom.stage}
+    DB_RESOURCE_ARN: ${file(../../resources/stack-outputs/database-${self:custom.stage}.yml):DbClusterArn}
+    SECRET_ARN: ${file(../../resources/stack-outputs/database-${self:custom.stage}.yml):SecretManagerArn}
+  
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - rds-data:ExecuteStatement
+        - rds-data:BatchExecuteStatement
+        - rds-data:BeginTransaction
+        - rds-data:CommitTransaction
+        - rds-data:RollbackTransaction
+      Resource: "*"
+    - Effect: Allow
+      Action:
+        - secretsmanager:GetSecretValue
+      Resource:
+        'Fn::ImportValue': ${self:custom.stage}-SecretManagerArn
+    - Effect: Allow
+      Action:
+        - cognito-idp:AdminCreateUser
+        - cognito-idp:AdminDeleteUser
+        - cognito-idp:AdminEnableUser
+        - cognito-idp:AdminDisableUser
+      Resource:
+        'Fn::ImportValue': ${self:custom.stage}-CognitoUserPoolArn
+  
+custom:
+  defaultStage: ${file(../../../serverless.common.yml):custom.defaultStage}
+  stage: ${file(../../../serverless.common.yml):custom.stage}
+  baseApiPath: ${file(../../../serverless.common.yml):custom.baseApiPath}
+
+  usersEntityPath: ${self:custom.baseApiPath}/users
+  
+
+  bundle:
+    sourcemaps: true
+    externals:
+      - mypay-helpers
+      - models
+    linting: false #Ignore for compilation
+    ignorePackages:
+      - pg-hstore
+
+  #Locally
+  serverless-offline:
+    httpPort: 4002
+    lambdaPort: 5002
+    printOutput: true
+  
+functions:
+  - ${file(functions.yml)}
+
+resources:
+  # API Gateway Errors
+  - ${file(api-gateway-errors.yml)}

@@ -7,9 +7,10 @@
 export const response = (body, statusCode, headers) => {
 
     if (typeof headers === 'undefined') {
-        headers = { 'Access-Control-Allow-Origin': '*' };
+        headers = { 'Access-Control-Allow-Origin': '*',  'Access-Control-Allow-Credentials': true };
     } else {
         headers['Access-Control-Allow-Origin'] = '*';
+        headers['Access-Control-Allow-Credentials'] = true;
     }
 
     let response = {

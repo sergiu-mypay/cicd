@@ -1,0 +1,3 @@
+DbClusterArn: 'arn:aws:rds:us-east-1:813715908525:cluster:dev-cluster'
+SecretManagerArn: 'arn:aws:secretsmanager:us-east-1:813715908525:secret:dev-UserSecret-WWj2SX'
+ServerlessDeploymentBucketName: mypay-database-dev-serverlessdeploymentbucket-bexoxucfgswe

@@ -15,7 +15,7 @@ custom:
   stage: ${file(../../../serverless.common.yml):custom.stage}
   siteBaseUrls:
     prod: prod
-    dev: http://localhost:3001
+    dev: https://release-candidate.d1pgci3xcus5ov.amplifyapp.com/
     qa: qa
     uat: uat
   siteBaseUrl: ${self:custom.siteBaseUrls.${self:custom.resourceStage}, self:custom.siteBaseUrls.dev}
@@ -82,6 +82,34 @@ resources:
       Properties: 
         Domain: ${self:custom.stage}-mypay-domain
         UserPoolId: !Ref CognitoUserPool
+
+    CognitoUserPoolFacebookIdentityProvider:
+      Type: AWS::Cognito::UserPoolIdentityProvider
+      Properties:
+        UserPoolId:
+          Ref: CognitoUserPool
+        ProviderName: Facebook
+        ProviderDetails:
+          client_id: 4459505514063167
+          client_secret: 7ea91d8b16133a9eae4030159ce39f63
+          authorize_scopes: public_profile,email
+        ProviderType: Facebook
+        AttributeMapping:
+          email: email
+
+    CognitoUserPoolGoogleIdentityProvider:
+      Type: AWS::Cognito::UserPoolIdentityProvider
+      Properties:
+        UserPoolId:
+          Ref: CognitoUserPool
+        ProviderName: Google
+        ProviderDetails:
+          client_id: 901804385714-acp66260l66qkhdhkg5ulcrrel88ui77.apps.googleusercontent.com
+          client_secret: 91JVXjAXVa1RnNhjDrun7e9G
+          authorize_scopes: profile email openid
+        ProviderType: Google
+        AttributeMapping:
+          email: email
 
   Outputs:
     CognitoUserPoolId:

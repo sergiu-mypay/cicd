@@ -1,0 +1,11 @@
+ToggleDisableEnableLambdaFunctionArn: 'arn:aws:lambda:us-east-1:813715908525:function:mypay-users-dev-ToggleDisableEnable'
+ApiGatewayRestApiRootResource: p6s6u2hu95
+MasterAliasName: dev
+GetLambdaFunctionArn: 'arn:aws:lambda:us-east-1:813715908525:function:mypay-users-dev-Get'
+ApiGatewayRestApi: u07h5v7z8h
+GetByPropertyValueLambdaFunctionArn: 'arn:aws:lambda:us-east-1:813715908525:function:mypay-users-dev-GetByPropertyValue'
+CreateLambdaFunctionArn: 'arn:aws:lambda:us-east-1:813715908525:function:mypay-users-dev-Create'
+ServiceEndpoint: 'https://u07h5v7z8h.execute-api.us-east-1.amazonaws.com/dev'
+ServerlessDeploymentBucketName: mypay-users-dev-serverlessdeploymentbucket-q8nz7y06zoya
+ServerlessAliasReference: REFERENCE
+DeleteLambdaFunctionArn: 'arn:aws:lambda:us-east-1:813715908525:function:mypay-users-dev-Delete'

@@ -1,0 +1,19 @@
+fuge_global:
+  tail: true
+  monitor: false
+  monitor_excludes:
+    - '**/node_modules/**'
+    - '**/.git/**'
+    - '*.log'
+auth_service:
+  type: process
+  path: ./backend/services/auth
+  run: 'serverless offline --config=serverless-local.yml start'
+customers_service:
+  type: process
+  path: ./backend/services/customers
+  run: 'serverless offline --config=serverless-local.yml start'
+users_service:
+  type: process
+  path: ./backend/services/users
+  run: 'serverless offline --config=serverless-local.yml start'

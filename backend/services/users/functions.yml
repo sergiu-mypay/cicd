@@ -1,66 +1,89 @@
 Get:
   handler: functions/get-users-handler.getUsers
   events:
-  - http:
-      path: ${self:custom.usersEntityPath}
-      method: get
-      cors: true
+    - http:
+        path: ${self:custom.usersEntityPath}
+        method: get
+        authorizer:
+          arn: ${file(../../resources/stack-outputs/cognito-${self:custom.stage}.yml):CognitoUserPoolArn}
+        cors: true
   layers:
     - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
-    - ${file(../../layers/layers-outputs.yml):UserslibLambdaLayerQualifiedArn}
+    - ${file(../../layers/layers-outputs.yml):ModelslibLambdaLayerQualifiedArn}
 
 GetByPropertyValue:
   handler: functions/get-user-handler.getUser
   events:
-  - http:
-      path: ${self:custom.usersEntityPath}/{property}/{value}
-      method: get
-      cors: true
-      request:
-        parameters:
-          paths:
-            property: true
-            value: true
+    - http:
+        path: ${self:custom.usersEntityPath}/{property}/{value}
+        method: get
+        authorizer:
+          arn: ${file(../../resources/stack-outputs/cognito-${self:custom.stage}.yml):CognitoUserPoolArn}
+        cors: true
+        request:
+          parameters:
+            paths:
+              property: true
+              value: true
   layers:
     - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
-    - ${file(../../layers/layers-outputs.yml):UserslibLambdaLayerQualifiedArn}
+    - ${file(../../layers/layers-outputs.yml):ModelslibLambdaLayerQualifiedArn}
 
 Create:
   handler: functions/create-user-handler.createUser
   events:
-  - http:
-      path: ${self:custom.usersEntityPath}
-      method: post
+    - http:
+        path: ${self:custom.usersEntityPath}
+        method: post
+        authorizer:
+          arn: ${file(../../resources/stack-outputs/cognito-${self:custom.stage}.yml):CognitoUserPoolArn}
   layers:
     - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
-    - ${file(../../layers/layers-outputs.yml):UserslibLambdaLayerQualifiedArn}
+    - ${file(../../layers/layers-outputs.yml):ModelslibLambdaLayerQualifiedArn}
 
 Delete:
-  handler: functions/delete-user-handler.remove
+  handler: functions/delete-user-handler.deleteUser
   events:
-  - http:
-      path: ${self:custom.usersEntityPath}/delete/{email}
-      method: delete
-      cors: true
-      request:
-        parameters:
-          paths:
-            email: true
+    - http:
+        path: ${self:custom.usersEntityPath}/delete/{email}
+        method: delete
+        authorizer:
+          arn: ${file(../../resources/stack-outputs/cognito-${self:custom.stage}.yml):CognitoUserPoolArn}
+        cors: true
+        request:
+          parameters:
+            paths:
+              email: true
   layers:
     - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
-    - ${file(../../layers/layers-outputs.yml):UserslibLambdaLayerQualifiedArn}
-              
+    - ${file(../../layers/layers-outputs.yml):ModelslibLambdaLayerQualifiedArn}
+
 ToggleDisableEnable:
   handler: functions/toggle-disable-enable-user-handler.toggleDisableEnable
   events:
-  - http:
-      path: ${self:custom.usersEntityPath}/toggleDisableEnable/{email}
-      method: patch
-      cors: true
-      request:
-        parameters:
-          paths:
-            email: true
+    - http:
+        path: ${self:custom.usersEntityPath}/toggleDisableEnable/{email}
+        method: patch
+        authorizer:
+          arn: ${file(../../resources/stack-outputs/cognito-${self:custom.stage}.yml):CognitoUserPoolArn}
+        cors: true
+        request:
+          parameters:
+            paths:
+              email: true
   layers:
     - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
-    - ${file(../../layers/layers-outputs.yml):UserslibLambdaLayerQualifiedArn}
+    - ${file(../../layers/layers-outputs.yml):ModelslibLambdaLayerQualifiedArn}
+
+RolesGet:
+  handler: functions/roles/get-roles-handler.getRoles
+  events:
+    - http:
+        path: ${self:custom.usersEntityPath}/roles
+        method: get
+        authorizer:
+          arn: ${file(../../resources/stack-outputs/cognito-${self:custom.stage}.yml):CognitoUserPoolArn}
+        cors: true
+  layers:
+    - ${file(../../layers/layers-outputs.yml):HelperlibLambdaLayerQualifiedArn}
+    - ${file(../../layers/layers-outputs.yml):ModelslibLambdaLayerQualifiedArn}
