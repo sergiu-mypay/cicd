@@ -129,7 +129,7 @@ phases:
       # - cd ${SERVICE_MIGRATIONS} && serverless deploy --alias=${ALIAS} && cd -
 
 
-       - |-
+      - |-
           if [ "$DEPLOY_SERVICE_AUTH" -eq "1" ]; then
             cd ${SERVICE_AUTH} && serverless deploy --alias=${ALIAS} && cd -
           fi
