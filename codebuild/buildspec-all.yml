@@ -19,10 +19,43 @@ phases:
       nodejs: 12
     commands:
       - npm install -g serverless@1.61.2
+      - cd backend && npm ci && cd -
       - |-
           if [ "$DEPLOY_RESOURCE_DB" -eq "1" ]; then
-            echo "run my command"
             cd ${RESOURCE_DB} && npm ci && cd -
+          fi
+      - |-
+          if [ "$DEPLOY_RESOURCE_COGNITO" -eq "1" ]; then
+            cd ${RESOURCE_COGNITO} && npm ci && cd -
+          fi
+      - |-
+          if [ "$DEPLOY_RESOURCE_GATEWAY" -eq "1" ]; then
+            cd ${RESOURCE_GATEWAY} && npm ci && cd -
+          fi
+      - |-
+          if [ "$DEPLOY_LAYER_HELPER" -eq "1" ]; then
+            cd ${LAYERS} && npm ci && cd -
+            cd ${LAYERS}/helper_lib && npm ci && cd -
+            cd ${LAYERS}/helper_lib/dist/nodejs && npm ci && cd -
+            cd ${LAYERS}/models_lib && npm ci && cd -
+            cd ${LAYERS}/models_lib/dist/nodejs && npm ci && cd -
+          fi
+
+      - |-
+          if [ "$DEPLOY_SERVICE_AUTH" -eq "1" ]; then
+            cd ${SERVICE_AUTH} && npm ci && cd -
+          fi
+      - |-
+          if [ "$DEPLOY_SERVICE_USER" -eq "1" ]; then
+            cd ${SERVICE_USERS} && npm ci && cd -
+          fi
+      - |-
+          if [ "$DEPLOY_SERVICE_CUSTOMER" -eq "1" ]; then
+            cd ${SERVICE_CUSTOMERS} && npm ci && cd -
+          fi
+      - |-
+          if [ "$DEPLOY_SERVICE_MIGRATION" -eq "1" ]; then
+            cd ${SERVICE_MIGRATIONS} && npm ci && cd -
           fi
       # - cd ${RESOURCE_DB} && npm ci && cd -
       # - cd ${RESOURCE_COGNITO} && npm ci && cd -
@@ -43,6 +76,14 @@ phases:
   pre_build:
     commands:
        #Compile layers
+       - |-
+          if [ "$DEPLOY_LAYER_HELPER" -eq "1" ]; then
+            cd ${LAYERS}
+            cd helper_lib && npm run compile
+            cd ../
+            cd models_lib && npm run compile
+            cd ../../../
+          fi
       # - cd ${LAYERS}
       # - cd helper_lib && npm run compile
       # - cd ../
