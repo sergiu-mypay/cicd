@@ -22,6 +22,7 @@ phases:
       - |-
           if [ "$DEPLOY_RESOURCE_DB" -eq "1" ]; then
             echo "run my command"
+            cd ${RESOURCE_DB} && npm ci && cd -
           fi
       # - cd ${RESOURCE_DB} && npm ci && cd -
       # - cd ${RESOURCE_COGNITO} && npm ci && cd -
