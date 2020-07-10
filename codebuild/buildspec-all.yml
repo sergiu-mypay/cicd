@@ -19,54 +19,58 @@ phases:
       nodejs: 12
     commands:
       - npm install -g serverless@1.61.2
-      - cd ${RESOURCE_DB} && npm ci && cd -
-      - cd ${RESOURCE_COGNITO} && npm ci && cd -
-      - cd ${RESOURCE_GATEWAY} && npm ci && cd -
-      - cd ${LAYERS} && npm ci && cd -
-      - cd ${LAYERS}/helper_lib && npm ci && cd -
-      - cd ${LAYERS}/helper_lib/dist/nodejs && npm ci && cd -
-      - cd ${LAYERS}/models_lib && npm ci && cd -
-      - cd ${LAYERS}/models_lib/dist/nodejs && npm ci && cd -
+      - |-
+          if [ "$DEPLOY_RESOURCE_DB" -eq "1" ]; then
+            echo "run my command"
+          fi
+      # - cd ${RESOURCE_DB} && npm ci && cd -
+      # - cd ${RESOURCE_COGNITO} && npm ci && cd -
+      # - cd ${RESOURCE_GATEWAY} && npm ci && cd -
+      # - cd ${LAYERS} && npm ci && cd -
+      # - cd ${LAYERS}/helper_lib && npm ci && cd -
+      # - cd ${LAYERS}/helper_lib/dist/nodejs && npm ci && cd -
+      # - cd ${LAYERS}/models_lib && npm ci && cd -
+      # - cd ${LAYERS}/models_lib/dist/nodejs && npm ci && cd -
 
-      - cd backend && npm ci && cd -
-      - cd ${SERVICE_AUTH} && npm ci && cd -
-      - cd ${SERVICE_CUSTOMERS} && npm ci && cd -
-      - cd ${SERVICE_USERS} && npm ci && cd -
-      - cd ${SERVICE_MIGRATIONS} && npm ci && cd -
+      # - cd backend && npm ci && cd -
+      # - cd ${SERVICE_AUTH} && npm ci && cd -
+      # - cd ${SERVICE_CUSTOMERS} && npm ci && cd -
+      # - cd ${SERVICE_USERS} && npm ci && cd -
+      # - cd ${SERVICE_MIGRATIONS} && npm ci && cd -
     finally:
       - echo Installation finished
   pre_build:
     commands:
        #Compile layers
-      - cd ${LAYERS}
-      - cd helper_lib && npm run compile
-      - cd ../
-      - cd models_lib && npm run compile
-      - cd ../../../
+      # - cd ${LAYERS}
+      # - cd helper_lib && npm run compile
+      # - cd ../
+      # - cd models_lib && npm run compile
+      # - cd ../../../
   build:
     commands:
       # DB
-      - cd ${RESOURCE_DB} && serverless deploy && cd -
-      # Cognito
-      - cd ${RESOURCE_COGNITO} && serverless deploy && cd -
-      # Gateway
-      - cd ${RESOURCE_GATEWAY} && serverless deploy && cd -
+      # - cd ${RESOURCE_DB} && serverless deploy && cd -
+      # # Cognito
+      # - cd ${RESOURCE_COGNITO} && serverless deploy && cd -
+      # # Gateway
+      # - cd ${RESOURCE_GATEWAY} && serverless deploy && cd -
 
-      # Layers
-      - cd ${LAYERS} && serverless deploy && cd -
+      # # Layers
+      # - cd ${LAYERS} && serverless deploy && cd -
 
-      # Auth
-      - cd ${SERVICE_AUTH} && serverless deploy --alias=${ALIAS} && cd -
-      # Customers
-      - cd ${SERVICE_CUSTOMERS} && serverless deploy --alias=${ALIAS} && cd -
-      # Users
-      - cd ${SERVICE_USERS} && serverless deploy --alias=${ALIAS} && cd -
+      # # Auth
+      # - cd ${SERVICE_AUTH} && serverless deploy --alias=${ALIAS} && cd -
+      # # Customers
+      # - cd ${SERVICE_CUSTOMERS} && serverless deploy --alias=${ALIAS} && cd -
+      # # Users
+      # - cd ${SERVICE_USERS} && serverless deploy --alias=${ALIAS} && cd -
       # Migrations
       # - cd ${SERVICE_MIGRATIONS} && serverless deploy --alias=${ALIAS} && cd -
   post_build:
     commands:
-      - echo Executing migrations
-      - cd ${SERVICE_MIGRATIONS} && serverless migrations-up && cd -
+      # - echo Executing migrations
+      # - cd ${SERVICE_MIGRATIONS} && serverless migrations-up && cd -
 
     finally:
       - echo Build finished
