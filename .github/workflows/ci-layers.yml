@@ -19,13 +19,14 @@ jobs:
       output1: ${{ steps.updates.outputs.LAYER_HAS_UPDATES }}
     steps:
       - uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
+        # with:
+        #   ref: ${{ github.event.pull_request.head.sha }}
       - name: checkSourceCommit
         id: filepath
         # run: git checkout HEAD^
         run: |
-          echo ::set-output name=commitpath::$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }})
+          echo ::set-output name=commitpath::$(git diff origin/master HEAD --no-commit-id --name-only -r ${{ github.sha }})
+        # run: git diff origin/master HEAD
       - name: checkForLayer
         id: updates
         run: |
