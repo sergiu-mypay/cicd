@@ -22,7 +22,7 @@ jobs:
       - uses: technote-space/get-diff-action@v3
         id: git_diff
         with:
-          SEPARATOR: '\n'
+          SEPARATOR: ' '
         # with:
         #   ref: ${{ github.event.pull_request.head.sha }}
       # - name: checkSourceCommit
