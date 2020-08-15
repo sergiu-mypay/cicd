@@ -57,20 +57,6 @@ phases:
           if [ "$DEPLOY_SERVICE_MIGRATION" -eq "1" ]; then
             cd ${SERVICE_MIGRATIONS} && npm ci && cd -
           fi
-      # - cd ${RESOURCE_DB} && npm ci && cd -
-      # - cd ${RESOURCE_COGNITO} && npm ci && cd -
-      # - cd ${RESOURCE_GATEWAY} && npm ci && cd -
-      # - cd ${LAYERS} && npm ci && cd -
-      # - cd ${LAYERS}/helper_lib && npm ci && cd -
-      # - cd ${LAYERS}/helper_lib/dist/nodejs && npm ci && cd -
-      # - cd ${LAYERS}/models_lib && npm ci && cd -
-      # - cd ${LAYERS}/models_lib/dist/nodejs && npm ci && cd -
-
-      # - cd backend && npm ci && cd -
-      # - cd ${SERVICE_AUTH} && npm ci && cd -
-      # - cd ${SERVICE_CUSTOMERS} && npm ci && cd -
-      # - cd ${SERVICE_USERS} && npm ci && cd -
-      # - cd ${SERVICE_MIGRATIONS} && npm ci && cd -
     finally:
       - echo Installation finished
   pre_build:
@@ -84,20 +70,8 @@ phases:
             cd models_lib && npm run compile
             cd ../../../
           fi
-      # - cd ${LAYERS}
-      # - cd helper_lib && npm run compile
-      # - cd ../
-      # - cd models_lib && npm run compile
-      # - cd ../../../
   build:
     commands:
-      # DB
-      # - cd ${RESOURCE_DB} && serverless deploy && cd -
-      # # Cognito
-      # - cd ${RESOURCE_COGNITO} && serverless deploy && cd -
-      # # Gateway
-      # - cd ${RESOURCE_GATEWAY} && serverless deploy && cd -
-
       - |-
           if [ "$DEPLOY_RESOURCE_DB" -eq "1" ]; then
             cd ${RESOURCE_DB} && serverless deploy && cd -
@@ -111,23 +85,10 @@ phases:
             cd ${RESOURCE_GATEWAY} && serverless deploy && cd -
           fi
 
-      # # Layers
-      # - cd ${LAYERS} && serverless deploy && cd -
-
       - |-
           if [ "$DEPLOY_LAYER_HELPER" -eq "1" ]; then
             cd ${LAYERS} && serverless deploy && cd -
           fi
-
-      # # Auth
-      # - cd ${SERVICE_AUTH} && serverless deploy --alias=${ALIAS} && cd -
-      # # Customers
-      # - cd ${SERVICE_CUSTOMERS} && serverless deploy --alias=${ALIAS} && cd -
-      # # Users
-      # - cd ${SERVICE_USERS} && serverless deploy --alias=${ALIAS} && cd -
-      # Migrations
-      # - cd ${SERVICE_MIGRATIONS} && serverless deploy --alias=${ALIAS} && cd -
-
 
       - |-
           if [ "$DEPLOY_SERVICE_AUTH" -eq "1" ]; then
@@ -144,7 +105,6 @@ phases:
   post_build:
     commands:
       - echo Executing migrations
-      # - cd ${SERVICE_MIGRATIONS} && serverless migrations-up && cd -
       - |-
           if [ "$DEPLOY_SERVICE_MIGRATION" -eq "1" ]; then
             cd ${SERVICE_MIGRATIONS} && serverless migrations-up && cd -
