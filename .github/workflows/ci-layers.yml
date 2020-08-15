@@ -25,7 +25,7 @@ jobs:
         id: filepath
         # run: git checkout HEAD^
         run: |
-          echo ::set-output name=commitpath::$(git diff origin/master HEAD --no-commit-id --name-only -r ${{ github.sha }})
+          echo ::set-output name=commitpath::$(git diff HEAD --no-commit-id --name-only -r ${{ github.sha }})
         # run: git diff origin/master HEAD
       - name: checkForLayer
         id: updates
