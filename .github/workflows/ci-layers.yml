@@ -30,11 +30,12 @@ jobs:
         #   echo ::set-output name=commitpath::$(git diff HEAD --no-commit-id --name-only -r ${{ github.sha }})
         # run: git diff origin/master HEAD
         # run: |
-        echo ::set-output name=commitpath::$(git diff ${FROM}...${TO} '--diff-filter=AMRC' --name-only)
-        
-      # - name: Install composer
-      #   run: composer install
-      #   if: steps.git_diff.outputs.diff
+        # echo ::set-output name=commitpath::$(git diff ${FROM}...${TO} '--diff-filter=AMRC' --name-only)
+
+      - name: Install composer
+         run: |
+            echo ::set-output name=commitpath::$(git diff ${FROM}...${TO} '--diff-filter=AMRC' --name-only)
+        if: steps.git_diff.outputs.diff
       - name: checkForLayer
         id: updates
         run: |
