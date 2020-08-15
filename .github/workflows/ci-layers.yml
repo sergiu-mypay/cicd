@@ -41,6 +41,7 @@ jobs:
       - name: checkForLayer
         id: updates
         run: |
+          echo ${{ steps.git_diff.outputs.commitpath }};
           for i in ${{ steps.git_diff.outputs.commitpath }}; do
             echo item: $i
             if [[ $i =~ ^backend/layers ]]; then
