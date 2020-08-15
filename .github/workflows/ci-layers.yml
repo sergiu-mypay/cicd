@@ -34,7 +34,7 @@ jobs:
 
       - name: Install composer
         run: |
-          echo ::set-output name=commitpath::$(steps.git_diff.outputs.diff)
+          echo ::set-output name=commitpath::${{steps.git_diff.outputs.diff}}
         if: steps.git_diff.outputs.diff
       - name: checkForLayer
         id: updates
