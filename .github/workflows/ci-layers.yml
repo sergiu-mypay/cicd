@@ -21,6 +21,9 @@ jobs:
       - uses: actions/checkout@v2
       - uses: technote-space/get-diff-action@v3
         id: git_diff
+        with:
+          SEPARATOR: ','
+          ABSOLUTE: true
         # with:
         #   ref: ${{ github.event.pull_request.head.sha }}
       # - name: checkSourceCommit
@@ -34,7 +37,7 @@ jobs:
 
       - name: Install composer
         run: |
-          echo git diff ${FROM}...${TO} '--diff-filter=AMRC' --name-only
+          echo ::set-output name=commitpath::${{steps.git_diff.outputs.diff}}
         if: steps.git_diff.outputs.diff
       - name: checkForLayer
         id: updates
