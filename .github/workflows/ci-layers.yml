@@ -36,12 +36,12 @@ jobs:
 
       - name: Install composer
         run: |
-          echo ::set-output name=commitpath::${{steps.git_diff.outputs.diff}}
-        if: steps.git_diff.outputs.diff
+          echo ::set-output name=commitpath::${{ env.GIT_DIFF }}
+        if: ${{ env.GIT_DIFF }}
       - name: checkForLayer
         id: updates
         run: |
-          for i in ${{ steps.git_diff.outputs.commitpath }}; do
+          for i in ${{ env.GIT_DIFF }}; do
             echo item: $i
             if [[ $i =~ ^backend/layers ]]; then
               echo ::set-output name=LAYER_HAS_UPDATES::'1'
