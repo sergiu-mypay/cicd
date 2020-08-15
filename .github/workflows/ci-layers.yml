@@ -39,7 +39,7 @@ jobs:
       - name: checkForLayer
         id: updates
         run: |
-          for i in ${{ steps.filepath.outputs.commitpath }}; do
+          for i in ${{ steps.git_diff.outputs.commitpath }}; do
             echo item: $i
             if [[ $i =~ ^backend/layers ]]; then
               echo ::set-output name=LAYER_HAS_UPDATES::'1'
