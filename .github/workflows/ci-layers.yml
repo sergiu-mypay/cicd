@@ -34,10 +34,10 @@ jobs:
         # run: |
         # echo ::set-output name=commitpath::$(git diff ${FROM}...${TO} '--diff-filter=AMRC' --name-only)
 
-      - name: Install composer
-        run: |
-          echo ::set-output name=commitpath::${{ env.GIT_DIFF }}
-        if: ${{ env.GIT_DIFF }}
+      # - name: Install composer
+      #   run: |
+      #     echo ::set-output name=commitpath::${{ env.GIT_DIFF }}
+      #   if: ${{ env.GIT_DIFF }}
       - name: checkForLayer
         id: updates
         run: |
