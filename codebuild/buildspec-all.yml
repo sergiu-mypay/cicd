@@ -18,9 +18,9 @@ phases:
     runtime-versions:
       nodejs: 12
     commands:
-      - aws help
+      - aws s3 ls
       # - npm install -g serverless@1.61.2
-  #     - cd backend && npm ci && cd -
+      # - cd backend && npm ci && cd -
   #     - |-
   #         if [ "$DEPLOY_RESOURCE_DB" -eq "1" ]; then
   #           cd ${RESOURCE_DB} && npm ci && cd -
